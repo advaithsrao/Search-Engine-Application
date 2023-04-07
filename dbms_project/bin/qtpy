@@ -1,0 +1,8 @@
+#!/Users/ayush_macbook_m2pro/Desktop/Important/DBMS_Project/694Team14Dbms2023/dbms_project/bin/python3
+# -*- coding: utf-8 -*-
+import re
+import sys
+from qtpy.__main__ import main
+if __name__ == '__main__':
+    sys.argv[0] = re.sub(r'(-script\.pyw|\.exe)?$', '', sys.argv[0])
+    sys.exit(main())
