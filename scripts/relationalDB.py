@@ -5,10 +5,9 @@ Description:
 1. Create a postgres database with desired tables
 2. Push a dataset into our postgres database
 """
+from scripts.utils import connSQL
 import pandas as pd
 import numpy as np
-from configparser import ConfigParser
-import psycopg2
 from psycopg2 import extensions
 import warnings
 warnings.filterwarnings('ignore')
@@ -350,13 +349,8 @@ def pushPostgresData(_cursor, _data):
 
 
 if __name__ == "__main__":
-    config = ConfigParser()
-    config.read('config.ini')
-
-    conn = psycopg2.connect(
-        **dict(config.items('postgres'))
-    )
-
+    
+    conn = connSQL()
     cur = conn.cursor()
     
     # Create POSTGRES tables
@@ -367,8 +361,8 @@ if __name__ == "__main__":
     # Load the Twitter data
     twitterdf = pd.concat(
         [
-            pd.read_json("/Users/zoey/Downloads/corona-out-2", lines=True),
-            pd.read_json("/Users/zoey/Downloads/corona-out-3", lines=True)
+            pd.read_json("/data/corona-out-2", lines=True),
+            pd.read_json("/data/corona-out-3", lines=True)
         ]
     )
 
