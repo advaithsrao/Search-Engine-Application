@@ -27,26 +27,34 @@
 
 ## 1. Git clone the repository
 
-```git clone https://github.com/advaithsrao/694Team14Dbms2023.git```
+```bash
+git clone https://github.com/advaithsrao/694Team14Dbms2023.git
+```
 
 <br/>
 
 ## 2. Setup python environment
 
-> **NOTE:** A quick way to implement this would be with the *venv* package. You can also setup the environment with conda using the command ~conda create -n <env_name> python=3.8 | conda activate <env_name>~ . After this follow step 2.b 
+> **NOTE:** A quick way to implement this would be with the *venv* package. You can also setup the environment with conda using the command ```conda create -n <env_name> python=3.8 | conda activate <env_name>```. After this follow step 2.b 
 
 ### 2.a. Create a venv environment
 
-```python3 -m venv <env_name>```
+```bash
+python3 -m venv <env_name>
+```
 
 ### 2.b. Install requirements.txt file using pip
 
-```pip3 install -r requirements.txt --no-cache-dir```
+```bash
+pip3 install -r requirements.txt --no-cache-dir
+```
 
 <br/>
 
 ## 3. Setup the relational database
 
-```sh scripts/setup/relationalDB.sh```
+```bash
+sh scripts/setup/relationalDB.sh
+```
 
 ---
