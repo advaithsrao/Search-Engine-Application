@@ -8,34 +8,32 @@ Description:
 import pandas as pd
 import numpy as np
 from configparser import ConfigParser
-
+import psycopg2
+from psycopg2 import extensions
 import warnings
 warnings.filterwarnings('ignore')
 
-import psycopg2
-from psycopg2 import extensions
-
 def createPostgresTables(_cursor):
     try:
-        ## User profile table -> table 1
+        # User profile table -> table 1
         _cursor.execute(
             """
-            CREATE TABLE user_profile 
+            CREATE TABLE user_profile
             (
-                user_id TEXT PRIMARY KEY, 
-                name VARCHAR(50), 
-                screen_name VARCHAR(15), 
-                url TEXT NULL , 
-                location TEXT NULL, 
+                user_id TEXT PRIMARY KEY,
+                name VARCHAR(50),
+                screen_name VARCHAR(15),
+                url TEXT NULL ,
+                location TEXT NULL,
                 followers_count INTEGER NULL,
-                friends_count INTEGER, 
-                listed_count INTEGER, 
-                favourites_count INTEGER, 
-                statuses_count INTEGER, 
-                created_at VARCHAR(30), 
-                description TEXT, 
-                language CHAR(4), 
-                verified BOOLEAN, 
+                friends_count INTEGER,
+                listed_count INTEGER,
+                favourites_count INTEGER,
+                statuses_count INTEGER,
+                created_at VARCHAR(30),
+                description TEXT,
+                language CHAR(4),
+                verified BOOLEAN,
                 profile_image_url TEXT,
                 profile_background_image_url TEXT NULL,
                 default_profile BOOLEAN NULL,
@@ -48,12 +46,12 @@ def createPostgresTables(_cursor):
         print(f'\t Table user_profile Create Unuccessful as {e}')
 
     try:
-        ## Reply tweet table -> table 2
+        # Reply tweet table -> table 2
         _cursor.execute(
             """
-            CREATE TABLE reply 
+            CREATE TABLE reply
             (
-                reply_tweet_id TEXT PRIMARY KEY, 
+                reply_tweet_id TEXT PRIMARY KEY,
                 tweet_id TEXT
             )
             """
@@ -63,12 +61,12 @@ def createPostgresTables(_cursor):
         print(f'\t Table reply Create Unuccessful as {e}')
 
     try:
-        ## Quoted tweet table -> table 3
+        # Quoted tweet table -> table 3
         _cursor.execute(
             """
             CREATE TABLE quoted_tweets
             (
-                quoted_tweet_id TEXT PRIMARY KEY, 
+                quoted_tweet_id TEXT PRIMARY KEY,
                 tweet_id TEXT
             )
             """
@@ -78,12 +76,12 @@ def createPostgresTables(_cursor):
         print(f'\t Table quoted_tweets Create Unuccessful as {e}')
 
     try:
-        ## Retweet table -> table 4
+        # Retweet table -> table 4
         _cursor.execute(
             """
-            CREATE TABLE retweets 
+            CREATE TABLE retweets
             (
-                retweet_id TEXT PRIMARY KEY, 
+                retweet_id TEXT PRIMARY KEY,
                 tweet_id TEXT
             )
             """
@@ -93,16 +91,16 @@ def createPostgresTables(_cursor):
         print(f'\t Table retweets Create Unuccessful as {e}')
 
     try:
-        ## Tweets table -> table 5
+        # Tweets table -> table 5
         _cursor.execute(
             """
-            CREATE TABLE tweets 
+            CREATE TABLE tweets
             (
-                tweet_id TEXT PRIMARY KEY, 
+                tweet_id TEXT PRIMARY KEY,
                 user_id TEXT,
-                original_tweet_flag BOOLEAN, 
-                retweet_flag BOOLEAN, 
-                quoted_tweet_flag BOOLEAN, 
+                original_tweet_flag BOOLEAN,
+                retweet_flag BOOLEAN,
+                quoted_tweet_flag BOOLEAN,
                 reply_tweet_flag BOOLEAN
             )
             """
@@ -111,9 +109,9 @@ def createPostgresTables(_cursor):
     except Exception as e:
         print(f'\t Table tweets Create Unuccessful as {e}')
 
-def preparePushData(_columns, _data, _tablename): 
+def preparePushData(_columns, _data, _tablename):
     # print(f'\t Executing Table Push for Table -> {_tablename}')
-    
+
     _columns = ', '.join(_columns)
     _values = _data.values.tolist()
     
@@ -130,9 +128,9 @@ def preparePushData(_columns, _data, _tablename):
             
         cur.execute(
             f"""
-                INSERT INTO 
+                INSERT INTO
                     {_tablename} ({_columns})
-                VALUES 
+                VALUES
                     ({_row})
             """
         )
@@ -183,7 +181,7 @@ def pushPostgresData(_cursor, _data):
                 lambda x: extensions.adapt(x).getquoted().decode('utf-8') if bool(x) else x
             )
             _data1[_col] = _data1[_col].apply(
-                lambda x: x.replace("'","").replace("%","%%") if bool(x) else x
+                lambda x: x.replace("'", "").replace("%", "%%") if bool(x) else x
             )
 
         table1Values = _data1[
@@ -398,11 +396,11 @@ if __name__ == "__main__":
     )
 
     twitterdf['original_tweet_flag'] = np.where(
-        (twitterdf['retweet_flag'] == False) & 
-        (twitterdf['quoted_tweet_flag'] == False) & 
-        (twitterdf['reply_tweet_flag'] == False),
-        True,
-        False
+        (twitterdf['retweet_flag'] == True) & 
+        (twitterdf['quoted_tweet_flag'] == True) & 
+        (twitterdf['reply_tweet_flag'] == True),
+        False,
+        True
     )
     
     # Drop duplicates on user_id
@@ -412,9 +410,9 @@ if __name__ == "__main__":
     twitterdf.reset_index(inplace = True, drop = True)
 
     # Call push functions
-    print(f'POSTGRES: *** Starting table push ***')
+    print('POSTGRES: *** Starting table push ***')
     pushPostgresData(cur, twitterdf) 
-    print(f'POSTGRES: *** Table Push Successful for all tables ***')
+    print('POSTGRES: *** Table Push Successful for all tables ***')
 
     # Commit & close the cursor & connection
     cur.close()
