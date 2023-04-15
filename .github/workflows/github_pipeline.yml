@@ -1,11 +1,11 @@
-name: Dependency Check
+name: Dependency & Lint Check
 
 on:
   pull_request:
     branches: [ '*' ]
 
 jobs:
-  lint:
+  requirementsCheck:
     runs-on: ubuntu-latest
 
     steps:
@@ -20,4 +20,27 @@ jobs:
       run: |
         python -m pip install --upgrade pip
         if [ -f requirements.txt ]; then pip install -r requirements.txt; fi
-     
+    
+    - name: Check for vulnerable dependencies
+      run: |
+        safety check --full-report
+  
+  lintCheck:
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/checkout@v2
+
+    - name: Set up Python
+      uses: actions/setup-python@v2
+      with:
+        python-version: 3.8
+
+    - name: Install dependencies
+      run: |
+        python -m pip install --upgrade pip
+        pip install flake8
+    
+    - name: Lint Check with Flake8
+      run: |
+        flake8 --ignore=E251,E302,E501,E712,W291,W292,W293,W504 scripts/
