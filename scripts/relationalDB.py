@@ -361,8 +361,8 @@ if __name__ == "__main__":
     # Load the Twitter data
     twitterdf = pd.concat(
         [
-            pd.read_json("/data/corona-out-2", lines=True),
-            pd.read_json("/data/corona-out-3", lines=True)
+            pd.read_json("./data/corona-out-2", lines=True),
+            pd.read_json("./data/corona-out-3", lines=True)
         ]
     )
 
