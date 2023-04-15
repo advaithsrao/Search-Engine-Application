@@ -9,7 +9,10 @@ docker pull postgres:latest
 export imageID=$(docker images|grep postgres|xargs|awk '{print $3}')
 
 # Docker run our postgres image
-docker run -p 127.0.0.1:5544:5432 -e POSTGRES_USER=postgresUser -e POSTGRES_PASSWORD=postgresPW $imageID
+docker run -d -p 127.0.0.1:5544:5432 -e POSTGRES_USER=postgresUser -e POSTGRES_PASSWORD=postgresPW $imageID
 
-# Run script to push our data onto postgres tables
-python3 ../pushRelationalDB.py
+# Sleep for 30 seconds as we want the earlier command to run
+sleep 30
+
+# Run script to create our postgres tables and push our data onto postgres tables
+python3 scripts/RelationalDB.py
