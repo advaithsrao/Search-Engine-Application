@@ -36,7 +36,7 @@ git clone https://github.com/advaithsrao/694Team14Dbms2023.git
 
 ## 2. Setup python environment
 
-> **NOTE:** A quick way to implement this would be with the *venv* package. You can also setup the environment with conda using the command ```conda create -n <env_name> python=3.8 | conda activate <env_name>```. After this follow step 2.b 
+> **NOTE:** A quick way to implement this would be with the *venv* package. You can also setup the environment with conda using the command ```conda create -n <env_name> python=3.8 | conda activate <env_name>```. After this follow step 2.c 
 
 ### 2.a. Create a venv environment
 
@@ -44,7 +44,13 @@ git clone https://github.com/advaithsrao/694Team14Dbms2023.git
 python3 -m venv <env_name>
 ```
 
-### 2.b. Install requirements.txt file using pip
+### 2.b. Source onto environment
+
+```bash
+source <env_name>/bin/activate
+```
+
+### 2.c. Install requirements.txt file using pip
 
 ```bash
 pip3 install -r requirements.txt --no-cache-dir
