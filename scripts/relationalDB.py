@@ -5,7 +5,7 @@ Description:
 1. Create a postgres database with desired tables
 2. Push a dataset into our postgres database
 """
-from scripts.utils import connSQL
+from utils import connSQL
 import pandas as pd
 import numpy as np
 from psycopg2 import extensions
