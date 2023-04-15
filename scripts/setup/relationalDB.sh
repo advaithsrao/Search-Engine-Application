@@ -15,4 +15,4 @@ docker run -d -p 127.0.0.1:5544:5432 -e POSTGRES_USER=postgresUser -e POSTGRES_P
 sleep 30
 
 # Run script to create our postgres tables and push our data onto postgres tables
-python3 scripts/RelationalDB.py
+python3 scripts/relationalDB.py
