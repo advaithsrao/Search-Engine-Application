@@ -29,7 +29,7 @@ def createPostgresTables(_cursor):
                 listed_count INTEGER,
                 favourites_count INTEGER,
                 statuses_count INTEGER,
-                created_at VARCHAR(30),
+                created_at TIMESTAMP,
                 description TEXT,
                 language CHAR(4),
                 verified BOOLEAN,

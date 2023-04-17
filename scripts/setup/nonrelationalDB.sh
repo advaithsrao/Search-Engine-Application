@@ -9,7 +9,7 @@ docker pull elasticsearch:7.14.0
 export imageID=$(docker images|grep elasticsearch|xargs|awk '{print $3}')
 
 # Run the elasticsearch image
-docker run -d --name ElasticSearchServer \
+docker run -d --name elasticSearchServer \
     -p 9200:9200  \
     -p 9300:9300 \
     -e "discovery.seed_hosts=localhost" \
