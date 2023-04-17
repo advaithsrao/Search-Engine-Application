@@ -206,6 +206,12 @@ def pushPostgresData(_cursor, _data):
             ]
         ]
 
+        table1Values.drop_duplicates(
+            'id_str', 
+            keep = 'last',
+            inplace = True
+        )
+
         preparePushData(
             table1Columns, 
             table1Values, 
@@ -345,18 +351,15 @@ def pushPostgresData(_cursor, _data):
     except Exception as e:
         print(f'POSTGRES: *** Push for Table -> tweets Unsuccessful as {e} ***')
 
-# def pushPostgresEntries()
-
-
 if __name__ == "__main__":
     
     conn = connSQL()
     cur = conn.cursor()
     
     # Create POSTGRES tables
-    print('POSTGRES: *** Table Push Started ***')
+    print('POSTGRES: *** Table Creation Started ***')
     createPostgresTables(cur)
-    print('POSTGRES: *** All Tables Pushed Successfully ***')
+    print('POSTGRES: *** All Tables Successfully Created ***')
     
     # Load the Twitter data
     twitterdf = pd.concat(
@@ -397,8 +400,8 @@ if __name__ == "__main__":
         True
     )
     
-    # Drop duplicates on user_id
-    twitterdf.drop_duplicates(subset = ["user_id"], keep = "last", inplace = True)
+    # # Drop duplicates on user_id
+    # twitterdf.drop_duplicates(subset = ["user_id"], keep = "last", inplace = True)
 
     # Reset indices
     twitterdf.reset_index(inplace = True, drop = True)

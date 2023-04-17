@@ -6,6 +6,7 @@ Description:
 """
 from configparser import ConfigParser
 import psycopg2
+from elasticsearch import Elasticsearch
 
 config = ConfigParser()
 config.read('config.ini')
@@ -16,3 +17,15 @@ def connSQL():
     )
 
     return connection
+
+
+
+def connNoSQL():
+    esConfig = dict(config.items('elasticsearch'))
+    
+    client = Elasticsearch(
+        f"http://{esConfig['host']}:{esConfig['port']}",
+        basic_auth = (esConfig['elastic_username'], esConfig['elastic_password'])
+    )
+
+    return client

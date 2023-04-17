@@ -58,10 +58,10 @@ pip3 install -r requirements.txt --no-cache-dir
 
 <br/>
 
-## 3. Setup the relational database
+## 3. Setup the SQL and NoSQL databases
 
 ```bash
-sh scripts/setup/relationalDB.sh
+sh scripts/setup/main.sh
 ```
 
 ---
