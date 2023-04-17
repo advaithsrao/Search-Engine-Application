@@ -10,6 +10,7 @@ export imageID=$(docker images|grep postgres|xargs|awk '{print $3}')
 
 # Docker run our postgres image
 docker run -d --name postgresServer \
+    --restart=always \
     -p 127.0.0.1:5544:5432 \
     -e POSTGRES_USER=postgresUser \
     -e POSTGRES_PASSWORD=postgresPW \
