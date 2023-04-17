@@ -15,7 +15,7 @@ warnings.filterwarnings('ignore')
 def createIndexPushData(_client):
     doc_count = 0
     base_index_name = 'index_'
-    max_docs_per_index = 1000
+    max_docs_per_index = 5000
 
     # Loop through the documents and index them
     for doc in docs:
