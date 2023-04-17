@@ -352,7 +352,6 @@ def pushPostgresData(_cursor, _data):
         print(f'POSTGRES: *** Push for Table -> tweets Unsuccessful as {e} ***')
 
 if __name__ == "__main__":
-    
     conn = connSQL()
     cur = conn.cursor()
     
