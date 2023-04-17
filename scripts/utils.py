@@ -12,20 +12,40 @@ config = ConfigParser()
 config.read('config.ini')
 
 def connSQL():
-    connection = psycopg2.connect(
+    _connection = psycopg2.connect(
         **dict(config.items('postgres'))
     )
 
-    return connection
+    return _connection
 
 
 
 def connNoSQL():
     esConfig = dict(config.items('elasticsearch'))
     
-    client = Elasticsearch(
+    _client = Elasticsearch(
+        f"http://{esConfig['host']}:{esConfig['port']}",
+        basic_auth = (esConfig['elastic_username'], esConfig['elastic_password']),
+        max_retries=3,
+        retry_on_timeout=True
+    )
+
+    return _client
+
+def removeNoSQLData():
+    esConfig = dict(config.items('elasticsearch'))
+    
+    _client = Elasticsearch(
         f"http://{esConfig['host']}:{esConfig['port']}",
         basic_auth = (esConfig['elastic_username'], esConfig['elastic_password'])
     )
 
-    return client
+    try:
+        _client.indices.delete(index='_all')
+        print('Elastic Search: *** Index Data Delete Successful ***')
+    except Exception as e:
+        print(f'Elastic Search: *** Index Data Delete Unsuccessful as {e} ***')
+
+
+
+

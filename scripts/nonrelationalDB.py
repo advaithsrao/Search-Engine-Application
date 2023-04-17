@@ -14,11 +14,11 @@ warnings.filterwarnings('ignore')
 
 def createIndexPushData(_client):
     doc_count = 0
-    base_index_name = 'twitter_data'
-    max_docs_per_index = 50
+    base_index_name = 'index_'
+    max_docs_per_index = 1000
 
     # Loop through the documents and index them
-    for doc in docs[0:50]:
+    for doc in docs:
         try:
             # Compute the index name based on the counter variable
             index_name = f"{base_index_name}_{doc_count // max_docs_per_index}"
@@ -38,7 +38,7 @@ def createIndexPushData(_client):
             # Increment the counter variable
             doc_count += 1
 
-            if doc_count % 1000 == 0:
+            if doc_count % max_docs_per_index == 0:
                 print(f'\t Total Index Push done for {doc_count}')
         except Exception as e:
             print(f'\t Index Push Unsuccessful for doc_count: {doc_count} as {e}')
@@ -65,7 +65,10 @@ if __name__ == "__main__":
     )
 
     # Reset indices
-    twitterdf.reset_index(inplace = True, drop = True)
+    twitterdf.reset_index(
+        inplace = True, 
+        drop = True
+    )
 
     twitterdf = twitterdf[
         [
@@ -91,9 +94,19 @@ if __name__ == "__main__":
             'retweeted_status'
         ]
     ]
+
+    twitterdf['place'] = twitterdf['place'].map(str)
+    # twitterdf['entities'] = twitterdf['entities'].map(str)
+    twitterdf['extended_entities'] = twitterdf['extended_entities'].map(str)
+    twitterdf['quoted_status'] = twitterdf['quoted_status'].map(str)
+    twitterdf['retweeted_status'] = twitterdf['retweeted_status'].map(str)
     
     # Create document list
-    docs = json.loads(twitterdf.to_json(orient='records'))
+    docs = json.loads(
+        twitterdf.to_json(
+            orient='records'
+        )
+    )
 
     # Call Index Creation and push function
     try:
