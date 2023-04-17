@@ -114,6 +114,3 @@ if __name__ == "__main__":
         print('ELASTICSEARCH: *** All Indices Created and Data Successfully Pushed ***')
     except Exception as e:
         print(f'ELASTICSEARCH: *** Index Push Unsuccessful  as {e} ***')
-
-    
-

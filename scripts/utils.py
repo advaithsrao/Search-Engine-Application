@@ -18,8 +18,6 @@ def connSQL():
 
     return _connection
 
-
-
 def connNoSQL():
     esConfig = dict(config.items('elasticsearch'))
     
@@ -45,7 +43,3 @@ def removeNoSQLData():
         print('Elastic Search: *** Index Data Delete Successful ***')
     except Exception as e:
         print(f'Elastic Search: *** Index Data Delete Unsuccessful as {e} ***')
-
-
-
-
