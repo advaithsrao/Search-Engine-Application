@@ -8,8 +8,12 @@ docker pull elasticsearch:7.14.0
 # Export the image_id of our elasticsearch image
 export imageID=$(docker images|grep elasticsearch|xargs|awk '{print $3}')
 
+# Create common network for Elasticsearch and Kibana
+docker network create noSQL_network
+
 # Run the elasticsearch image
 docker run -d --name elasticSearchServer \
+    --net noSQL_network \
     --restart=always \
     -p 9200:9200  \
     -p 9300:9300 \
@@ -39,3 +43,9 @@ sleep 30
 
 # Run script to create our postgres tables and push our data onto postgres tables
 python3 scripts/nonrelationalDB.py
+
+# Run kibana for monitoring ELK
+docker run -d --name kib-01 \
+    --net noSQL_network \
+    -p 5601:5601 \
+    docker.elastic.co/kibana/kibana:8.7.0
