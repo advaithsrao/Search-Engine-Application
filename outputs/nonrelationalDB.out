@@ -1,0 +1,31 @@
+7.14.0: Pulling from library/elasticsearch
+Digest: sha256:81c126e4eddbc5576285670cb3e23d7ef7892ee5e757d6d9ba870b6fe99f1219
+Status: Image is up to date for elasticsearch:7.14.0
+docker.io/library/elasticsearch:7.14.0
+770a2282cd877604e3825950ab2f43f4e560ff2eb929284753b512a58c19bb55
+ELASTICSEARCH: *** Index Creation and Push Started ***
+	 Total Index Push done for 5000
+	 Total Index Push done for 10000
+	 Total Index Push done for 15000
+	 Total Index Push done for 20000
+	 Total Index Push done for 25000
+	 Total Index Push done for 30000
+	 Total Index Push done for 35000
+	 Total Index Push done for 40000
+	 Total Index Push done for 45000
+	 Total Index Push done for 50000
+	 Total Index Push done for 55000
+	 Total Index Push done for 60000
+	 Total Index Push done for 65000
+	 Total Index Push done for 70000
+	 Total Index Push done for 75000
+	 Total Index Push done for 80000
+	 Total Index Push done for 85000
+	 Total Index Push done for 90000
+	 Total Index Push done for 95000
+	 Total Index Push done for 100000
+	 Total Index Push done for 105000
+	 Total Index Push done for 110000
+	 Total Index Push done for 115000
+	 Total Index Push done for 120000
+ELASTICSEARCH: *** All Indices Created and Data Successfully Pushed ***

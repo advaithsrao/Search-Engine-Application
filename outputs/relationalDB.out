@@ -1,0 +1,19 @@
+latest: Pulling from library/postgres
+Digest: sha256:6cc97262444f1c45171081bc5a1d4c28b883ea46a6e0d1a45a8eac4a7f4767ab
+Status: Image is up to date for postgres:latest
+docker.io/library/postgres:latest
+ee051b7e178fd105228149bb66b3ba645a55c6b8712986bfde478bb8b0b63521
+POSTGRES: *** Table Creation Started ***
+	 Table user_profile Create Successful
+	 Table reply Create Successful
+	 Table quoted_tweets Create Successful
+	 Table retweets Create Successful
+	 Table tweets Create Successful
+POSTGRES: *** All Tables Successfully Created ***
+POSTGRES: *** Starting table push ***
+	 Push for Table -> user_profile Successful
+	 Push for Table -> reply Successful
+	 Push for Table -> quoted_tweets Successful
+	 Push for Table -> retweets Successful
+	 Push for Table -> tweets Successful
+POSTGRES: *** Table Push Successful for all tables ***
