@@ -4,7 +4,6 @@ File : /scripts/utils.py
 Description:
 1. Setup a connection to the PostgreSQL database
 """
-import sys
 import os
 from configparser import ConfigParser
 import psycopg2
@@ -37,7 +36,7 @@ def connSQL():
 
 def connNoSQL():
     config = getConfig()
-    
+
     esConfig = dict(config.items('elasticsearch'))
     
     _client = Elasticsearch(
