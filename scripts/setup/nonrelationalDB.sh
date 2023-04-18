@@ -24,6 +24,12 @@ docker run -d --name elasticSearchServer \
     -e "node.data=true" \
     $imageID
 
+# Run kibana for monitoring ELK
+docker run -d --name kib-01 \
+    --net noSQL_network \
+    -p 5601:5601 \
+    docker.elastic.co/kibana/kibana:8.7.0
+
 # docker run -d --name ElasticSearchServer \
 #     -p 9200:9200 \
 #     -p 9300-9400:9300-9400 \
@@ -43,9 +49,3 @@ sleep 30
 
 # Run script to create our postgres tables and push our data onto postgres tables
 python3 scripts/nonrelationalDB.py
-
-# Run kibana for monitoring ELK
-docker run -d --name kib-01 \
-    --net noSQL_network \
-    -p 5601:5601 \
-    docker.elastic.co/kibana/kibana:8.7.0
