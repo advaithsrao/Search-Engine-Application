@@ -22,7 +22,7 @@ def handle_data():
     datetimerange= str(request.form['datetimerange'])
     performancestats= str(request.form['performancestats'])
     data=[username,userid,userverification,tweetstring,hashtags,tweetsensitivity,tweetcontenttype,datetimerange,performancestats]
-    return render_template('test.html')
+    return render_template('results.html')
 
 if __name__ == "__main__":
     app.run(debug=True)
