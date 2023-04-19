@@ -1,8 +1,65 @@
 latest: Pulling from library/postgres
+26c5c85e47da: Pulling fs layer
+1c30a4c3f519: Pulling fs layer
+d5c0f1ae682d: Pulling fs layer
+1b1b2890ec0f: Pulling fs layer
+391087799df7: Pulling fs layer
+b413b4057e31: Pulling fs layer
+4fa4edfeab8b: Pulling fs layer
+b0a4d596bc61: Pulling fs layer
+f6d73cd87199: Pulling fs layer
+62b0bb33c69b: Pulling fs layer
+bb0ddb7e7f1a: Pulling fs layer
+583ec94d38ee: Pulling fs layer
+efdf2a922e82: Pulling fs layer
+b413b4057e31: Waiting
+62b0bb33c69b: Waiting
+1b1b2890ec0f: Waiting
+bb0ddb7e7f1a: Waiting
+391087799df7: Waiting
+583ec94d38ee: Waiting
+4fa4edfeab8b: Waiting
+efdf2a922e82: Waiting
+f6d73cd87199: Waiting
+d5c0f1ae682d: Verifying Checksum
+d5c0f1ae682d: Download complete
+1b1b2890ec0f: Verifying Checksum
+1b1b2890ec0f: Download complete
+1c30a4c3f519: Verifying Checksum
+1c30a4c3f519: Download complete
+b413b4057e31: Verifying Checksum
+b413b4057e31: Download complete
+4fa4edfeab8b: Download complete
+b0a4d596bc61: Download complete
+391087799df7: Verifying Checksum
+391087799df7: Download complete
+62b0bb33c69b: Verifying Checksum
+62b0bb33c69b: Download complete
+bb0ddb7e7f1a: Download complete
+583ec94d38ee: Verifying Checksum
+583ec94d38ee: Download complete
+efdf2a922e82: Download complete
+26c5c85e47da: Verifying Checksum
+26c5c85e47da: Download complete
+f6d73cd87199: Verifying Checksum
+f6d73cd87199: Download complete
+26c5c85e47da: Pull complete
+1c30a4c3f519: Pull complete
+d5c0f1ae682d: Pull complete
+1b1b2890ec0f: Pull complete
+391087799df7: Pull complete
+b413b4057e31: Pull complete
+4fa4edfeab8b: Pull complete
+b0a4d596bc61: Pull complete
+f6d73cd87199: Pull complete
+62b0bb33c69b: Pull complete
+bb0ddb7e7f1a: Pull complete
+583ec94d38ee: Pull complete
+efdf2a922e82: Pull complete
 Digest: sha256:6cc97262444f1c45171081bc5a1d4c28b883ea46a6e0d1a45a8eac4a7f4767ab
-Status: Image is up to date for postgres:latest
+Status: Downloaded newer image for postgres:latest
 docker.io/library/postgres:latest
-ee051b7e178fd105228149bb66b3ba645a55c6b8712986bfde478bb8b0b63521
+06c8c6305787bee5a2edcd86c9ff02aced88cb9316191501f2756168db1fa2f1
 POSTGRES: *** Table Creation Started ***
 	 Table user_profile Create Successful
 	 Table reply Create Successful
