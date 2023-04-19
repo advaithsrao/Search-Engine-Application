@@ -17,18 +17,33 @@ docker run -d --name elasticSearchServer \
     --restart=always \
     -p 9200:9200  \
     -p 9300:9300 \
+    -e "discovery.type=single-node" \
     -e "discovery.seed_hosts=localhost" \
+    -e "node.data=true" \
     -e "ELASTIC_USERNAME=elasticsearchUser" \
     -e "ELASTIC_PASSWORD=elasticsearchPW" \
-    -e "discovery.type=single-node" \
-    -e "node.data=true" \
     $imageID
 
+# Pull the latest docker image of elasticsearch
+docker pull kibana:7.14.0
+
+# Export the image_id of our kibana image
+export imageID=$(docker images|grep kibana|xargs|awk '{print $3}')
+
 # Run kibana for monitoring ELK
-docker run -d --name kib-01 \
+docker run -d --name kibana \
     --net noSQL_network \
+    --restart=always \
+    -e "ELASTIC_USERNAME=elasticsearchUser" \
+    -e "ELASTIC_PASSWORD=elasticsearchPW" \
+    -e "ELASTICSEARCH_HOSTS=http://172.22.0.2:9200" \
     -p 5601:5601 \
-    docker.elastic.co/kibana/kibana:8.7.0
+    $imageID
+
+# Note: In the above command, to get the elasticsearch host to use for kibana, use the below line, and get the elasticsearch ipv4 address and add it to the kibana docker run command
+# docker network inspect noSQL_network
+
+# The above line of code helps override getting the enrollment token and entering the kibana verification code manually 
 
 # docker run -d --name ElasticSearchServer \
 #     -p 9200:9200 \
