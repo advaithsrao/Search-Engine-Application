@@ -1,8 +1,63 @@
 7.14.0: Pulling from library/elasticsearch
+7a0437f04f83: Pull complete 
+7718d2f58c47: Pull complete 
+cc5c16bd8bb9: Pull complete 
+e3d829b4b297: Pull complete 
+1ad944c92c79: Pull complete 
+373fb8fbaf74: Extracting [==================================================>]  1.981kB/1.981kB
+373fb8fbaf74: Pull complete 
+5908d3eb2989: Pull complete 
 Digest: sha256:81c126e4eddbc5576285670cb3e23d7ef7892ee5e757d6d9ba870b6fe99f1219
-Status: Image is up to date for elasticsearch:7.14.0
+Status: Downloaded newer image for elasticsearch:7.14.0
 docker.io/library/elasticsearch:7.14.0
-770a2282cd877604e3825950ab2f43f4e560ff2eb929284753b512a58c19bb55
+ba08e8eecc6c99f9927371d232e5cf4518ec3467451fbd56419b8cbe1f5320d8
+c6a605fcb1222f65aaf28f41b32c59d146c850a4f8b0bf6bf27a17b1319a2237
+7.14.0: Pulling from library/kibana
+7a0437f04f83: Already exists
+d92a27ccb611: Pulling fs layer
+5c7ecfbf36a1: Pulling fs layer
+8d9081d817c4: Pulling fs layer
+a530cdbe89f1: Pulling fs layer
+ccffe653ddc0: Pulling fs layer
+af29ddcbaa8e: Pulling fs layer
+8e4704d6a270: Pulling fs layer
+458a467a0651: Pulling fs layer
+4fcc78271e5a: Pulling fs layer
+d86420aa7083: Pulling fs layer
+50e699604220: Pulling fs layer
+d53c69cf1db7: Pulling fs layer
+458a467a0651: Waiting
+50e699604220: Waiting
+4fcc78271e5a: Waiting
+ccffe653ddc0: Waiting
+af29ddcbaa8e: Waiting
+d86420aa7083: Waiting
+8e4704d6a270: Waiting
+d53c69cf1db7: Waiting
+5c7ecfbf36a1: Verifying Checksum
+5c7ecfbf36a1: Download complete
+8d9081d817c4: Verifying Checksum
+8d9081d817c4: Download complete
+ccffe653ddc0: Verifying Checksum
+ccffe653ddc0: Download complete
+a530cdbe89f1: Verifying Checksum
+a530cdbe89f1: Download complete
+8e4704d6a270: Verifying Checksum
+8e4704d6a270: Download complete
+458a467a0651: Download complete
+4fcc78271e5a: Verifying Checksum
+4fcc78271e5a: Download complete
+d86420aa7083: Verifying Checksum
+d86420aa7083: Download complete
+50e699604220: Verifying Checksum
+50e699604220: Download complete
+d53c69cf1db7: Verifying Checksum
+d92a27ccb611: Verifying Checksum
+d92a27ccb611: Download complete
+af29ddcbaa8e: Verifying Checksum
+af29ddcbaa8e: Download complete
+d53c69cf1db7: Download complete
+305dec0ea9adebb3cac3f539b7de5d1211b0b7176a1e1b3f64edcc28630c5f9d
 ELASTICSEARCH: *** Index Creation and Push Started ***
 	 Total Index Push done for 5000
 	 Total Index Push done for 10000
