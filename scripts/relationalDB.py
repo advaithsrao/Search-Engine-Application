@@ -97,10 +97,7 @@ def createPostgresTables(_cursor):
             (
                 tweet_id TEXT PRIMARY KEY,
                 user_id TEXT,
-                original_tweet_flag BOOLEAN,
-                retweet_flag BOOLEAN,
-                quoted_tweet_flag BOOLEAN,
-                reply_tweet_flag BOOLEAN
+                tweet_flag VARCHAR(20)
             )
             """
         )
@@ -320,20 +317,14 @@ def pushPostgresData(_cursor, _data):
         table5Columns = [
             'tweet_id',
             'user_id',
-            'original_tweet_flag',
-            'retweet_flag',
-            'quoted_tweet_flag',
-            'reply_tweet_flag'
+            'tweet_flag'
         ]
 
         table5Values = _data[
             [
                 'id_str',
                 'user_id',
-                'original_tweet_flag',
-                'retweet_flag',
-                'quoted_tweet_flag',
-                'reply_tweet_flag'
+                'flag'
             ]
         ]
 
@@ -373,31 +364,72 @@ if __name__ == "__main__":
         lambda x: x["id_str"]
     )
 
-    twitterdf['retweet_flag'] = np.where(
-        twitterdf['retweeted_status'].isna(), 
-        False, 
-        True
-    )
+    twitterdf['flag'] = ''
 
-    twitterdf['quoted_tweet_flag'] = np.where(
-        twitterdf['quoted_status_id_str'].isna(), 
-        False, 
-        True
-    )
+    twitterdf['created_at'] = pd.to_datetime(twitterdf['created_at'])
+    twitterdf['created_at'] = twitterdf['created_at'].dt.strftime('%a %b %d %H:%M:%S +0000 %Y')
 
-    twitterdf['reply_tweet_flag'] = np.where(
-        twitterdf['in_reply_to_user_id_str'].isna(), 
-        False, 
-        True
-    )
 
-    twitterdf['original_tweet_flag'] = np.where(
-        (twitterdf['retweet_flag'] == False) & 
-        (twitterdf['quoted_tweet_flag'] == False) & 
-        (twitterdf['reply_tweet_flag'] == False),
-        True,
-        False
-    )
+    for index, row in twitterdf.iterrows():
+        # Check if quoted_status and retweeted_status are not NaN
+        if not pd.isnull(row['quoted_status']) and not pd.isnull(row['retweeted_status']):
+            # Extract the created_at dates for the quoted and retweeted tweets
+            quoted_created_at = row['quoted_status']['created_at']
+            retweeted_created_at = row['retweeted_status']['created_at']
+            
+            # Compare the dates and set the flag column accordingly
+            if quoted_created_at > retweeted_created_at:
+                twitterdf.loc[index, 'flag'] = 'quoted_tweet_flag'
+            else:
+                twitterdf.loc[index, 'flag'] = 'retweet_flag'
+        
+        if not pd.isnull(row['quoted_status']) and not pd.isnull(row['in_reply_to_user_id_str']):
+            # Extract the created_at dates for the quoted and reply tweets
+            quoted_created_at = row['quoted_status']['created_at']
+            reply_created_at = row['created_at']
+            
+            # Compare the dates and set the flag column accordingly
+            if quoted_created_at > reply_created_at:
+                twitterdf.loc[index, 'flag'] = 'quoted_tweet_flag'
+            else:
+                twitterdf.loc[index, 'flag'] = 'reply_tweet_flag'
+
+        elif not pd.isnull(row['quoted_status']):
+            twitterdf.loc[index, 'flag'] = 'quoted_tweet_flag'
+
+        elif not pd.isnull(row['retweeted_status']):
+            twitterdf.loc[index, 'flag'] = 'retweet_flag'
+            
+        elif not pd.isnull(row['in_reply_to_user_id_str']):
+            twitterdf.loc[index, 'flag'] = 'reply_tweet_flag'
+        else:
+            twitterdf.loc[index, 'flag'] = 'original_tweet_flag'
+
+    # twitterdf['retweet_flag'] = np.where(
+    #     twitterdf['retweeted_status'].isna(), 
+    #     False, 
+    #     True
+    # )
+
+    # twitterdf['quoted_tweet_flag'] = np.where(
+    #     twitterdf['quoted_status_id_str'].isna(), 
+    #     False, 
+    #     True
+    # )
+
+    # twitterdf['reply_tweet_flag'] = np.where(
+    #     twitterdf['in_reply_to_user_id_str'].isna(), 
+    #     False, 
+    #     True
+    # )
+
+    # twitterdf['original_tweet_flag'] = np.where(
+    #     (twitterdf['retweet_flag'] == False) & 
+    #     (twitterdf['quoted_tweet_flag'] == False) & 
+    #     (twitterdf['reply_tweet_flag'] == False),
+    #     True,
+    #     False
+    # )
     
     # # Drop duplicates on user_id
     # twitterdf.drop_duplicates(subset = ["user_id"], keep = "last", inplace = True)
