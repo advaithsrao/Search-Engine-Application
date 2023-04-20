@@ -369,7 +369,6 @@ if __name__ == "__main__":
     twitterdf['created_at'] = pd.to_datetime(twitterdf['created_at'])
     twitterdf['created_at'] = twitterdf['created_at'].dt.strftime('%a %b %d %H:%M:%S +0000 %Y')
 
-
     for index, row in twitterdf.iterrows():
         # Check if quoted_status and retweeted_status are not NaN
         if not pd.isnull(row['quoted_status']) and not pd.isnull(row['retweeted_status']):
