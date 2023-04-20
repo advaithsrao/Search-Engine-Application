@@ -392,11 +392,11 @@ if __name__ == "__main__":
     )
 
     twitterdf['original_tweet_flag'] = np.where(
-        (twitterdf['retweet_flag'] == True) & 
-        (twitterdf['quoted_tweet_flag'] == True) & 
-        (twitterdf['reply_tweet_flag'] == True),
-        False,
-        True
+        (twitterdf['retweet_flag'] == False) & 
+        (twitterdf['quoted_tweet_flag'] == False) & 
+        (twitterdf['reply_tweet_flag'] == False),
+        True,
+        False
     )
     
     # # Drop duplicates on user_id
