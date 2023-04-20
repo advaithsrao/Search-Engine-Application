@@ -7,7 +7,6 @@ Description:
 """
 from utils import connSQL
 import pandas as pd
-import numpy as np
 from psycopg2 import extensions
 import warnings
 warnings.filterwarnings('ignore')
