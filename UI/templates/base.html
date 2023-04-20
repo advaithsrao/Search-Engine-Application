@@ -4,7 +4,7 @@
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
     {% block stylesheets %}
     {% endblock %}
-    <title>{% block title %}Twitter Data Analysis{% endblock %}</title>
+    <title>{% block title %}DBMSProject{% endblock %}</title>
 </head>
 <body>
     {% block navcontent %}
@@ -12,7 +12,7 @@
         <div class="container">
             <div style="color: white;display: flex;align-items: center;">
                 <img src="../static/twitterlogo.png" alt="..." height="36" style="background-image: none;">
-                <div style="padding-left:10px ;">Twitter Data Analysis</div>
+                <div style="padding-left:10px ;">Twitter Data Search and Analysis</div>
             </div>
             <div>
                 <ul class="navbar-nav ms-auto">
@@ -20,7 +20,7 @@
                 <a class="nav-link" aria-current="page" href="{{url_for('search')}}">Search</a>
                 </li>
                 <li class="nav-item">
-                <a class="nav-link" href="{{url_for('explore')}}">Explore</a>
+                <a class="nav-link" target="_blank" href="https://github.com/advaithsrao/694Team14Dbms2023/blob/31ce7cdc56773c7c126baef7a49023139968922e/notebooks/Task1_Data_Summary.ipynb">Data Summary</a>
                 </li>
                 </ul>
             </div>
