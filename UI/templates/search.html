@@ -4,8 +4,8 @@
 <link href="tagsinput.css" rel="stylesheet" type="text/css">
 {% endblock %}
 {% block content %}
-<div style="margin: auto;width: 35em;padding: 50px;">
-<form action="{{ url_for('handle_data') }}" method="POST">
+<div style="margin: auto;width: 35em;padding: 25px;">
+<form action="{{ url_for('handle_data') }}" method="POST" style="padding: 15px;border: 1px solid;">
     <div class="form-group">
       <label for="Input1">User's Name</label>
       <input type="text" name='username' class="form-control" id="Input1" aria-describedby="Help1" placeholder="Enter User's Name">
