@@ -6,7 +6,7 @@ sys.path.append(root_folder)
 
 from utils import connSQL,connNoSQL
 
-def fetch_relational_data(SQL_client,username,userscreenname):
+def fetch_relational_data(SQL_client,username,userscreenname,start_datetime,end_datetime):
     if not(username):
         username='%'
     if not(userscreenname):
@@ -20,8 +20,10 @@ def fetch_relational_data(SQL_client,username,userscreenname):
                 LOWER(user_profile.name) LIKE LOWER('{username}') 
                 AND 
                 LOWER(user_profile.screen_name) LIKE LOWER('{userscreenname}')
+                AND
+                tweet_created_at BETWEEN '{start_datetime}' AND '{end_datetime}'
             '''
-    print(query)
+    #print(query)
     relational_data_df=pd.read_sql_query(query,con=SQL_client)
 
     #If no results found
@@ -56,10 +58,10 @@ def fetch_relational_data(SQL_client,username,userscreenname):
     return(relational_data_df)
 
 
-def fetch_results(username,userscreenname,userverification,tweetstring,hashtags,tweetsensitivity,tweetcontenttype,datetimerange,performancestats):
+def fetch_results(username,userscreenname,userverification,tweetstring,hashtags,tweetsensitivity,tweetcontenttype,start_datetime,end_datetime,performancestats):
     SQL_client=connSQL()
     NoSQL_client=connNoSQL()
-    relational_data_df=fetch_relational_data(SQL_client,username,userscreenname)
+    relational_data_df=fetch_relational_data(SQL_client,username,userscreenname,start_datetime,end_datetime)
     if(username or username):
         pass
     #No SQL Query

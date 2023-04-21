@@ -1,8 +1,8 @@
 $("#Input4").daterangepicker({
     timePicker: true,
-    startDate: moment().startOf("hour"),
-    endDate: moment().startOf("hour").add(32, "hour"),
+    startDate: '04/12/20 00:00 AM',
+    endDate: '04/26/20 11:59 PM',
     locale: {
-        format: "M/DD hh:mm A"
+        format: "MM/DD/YY hh:mm A"
     }
 });
