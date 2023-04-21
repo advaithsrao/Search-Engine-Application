@@ -1,6 +1,7 @@
 from flask import Flask, render_template, request
 import sys
 import os
+import numpy as np
 
 root_folder = os.path.abspath(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 sys.path.append(root_folder)
@@ -20,7 +21,7 @@ def explore():
 @app.route('/handle_data', methods=['POST'])
 def handle_data():
     #UI Parameters
-    username = str(request.form['username']).strip()
+    username = str(request.form['username'])
     userscreenname= str(request.form['userscreenname']).strip()
     userverification= str(request.form['userverification']).strip()
     tweetstring= str(request.form['tweetstring']).strip()
@@ -33,7 +34,7 @@ def handle_data():
     else:
         performancestats = 0
     results_df=fetch_results(username,userscreenname,userverification,tweetstring,hashtags,tweetsensitivity,tweetcontenttype,datetimerange,performancestats)
-
+    results_df.index = np.arange(1, len(results_df)+1)
     return render_template('results.html',results=results_df.to_html(escape=False))
 
 if __name__ == "__main__":

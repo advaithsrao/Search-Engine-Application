@@ -21,6 +21,7 @@ def fetch_relational_data(SQL_client,username,userscreenname):
                 AND 
                 LOWER(user_profile.screen_name) LIKE LOWER('{userscreenname}')
             '''
+    print(query)
     relational_data_df=pd.read_sql_query(query,con=SQL_client)
 
     #If no results found
