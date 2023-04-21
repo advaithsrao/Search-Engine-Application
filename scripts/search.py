@@ -12,6 +12,7 @@ def fetch_relational_data(SQL_client,username,userscreenname):
     if not(userscreenname):
         userscreenname='%'
 
+    #fetching data
     query=f'''SELECT * FROM tweets 
                 LEFT OUTER JOIN user_profile 
                 ON tweets.user_id = user_profile.user_id 
@@ -21,13 +22,23 @@ def fetch_relational_data(SQL_client,username,userscreenname):
                 LOWER(user_profile.screen_name) LIKE LOWER('{userscreenname}')
             '''
     relational_data_df=pd.read_sql_query(query,con=SQL_client)
+
+    #If no results found
     if relational_data_df.empty:
         return(pd.DataFrame({'message': ['sorry no values found']}))
+    
+    #Dropping column 'tweet_created_at'
     relational_data_df=relational_data_df.drop('tweet_created_at', axis=1)
+    
+    
+    #Tweets ids of same 'tweet_flag' grouped together as list
     all_columns_except_tweet_id=(relational_data_df.columns.difference(['tweet_id']).to_list())
     relational_data_df= relational_data_df.groupby(all_columns_except_tweet_id,as_index=False).agg({'tweet_id':lambda x: list(x)})
+
+    #'tweet_flag' pivoted as columns
     relational_data_df=pd.concat([relational_data_df.drop(['tweet_id','tweet_flag'], axis = 1) , relational_data_df.pivot(columns = "tweet_flag", values = "tweet_id")], axis = 1).reset_index(drop = True)
     
+    #counting tweets
     if('original_tweet_flag' in relational_data_df.columns):
         relational_data_df['original_tweet_count'] = relational_data_df['original_tweet_flag'].apply(lambda x: f'<a value={x} href="http://example.com/">{len(x)}</a>'if isinstance(x, list) else 0)
     if('quoted_tweet_flag' in relational_data_df.columns):
@@ -36,8 +47,11 @@ def fetch_relational_data(SQL_client,username,userscreenname):
         relational_data_df['reply_tweet_count'] = relational_data_df['reply_tweet_flag'].apply(lambda x: f'<a value={x} href="http://example.com/">{len(x)}</a>'if isinstance(x, list) else 0)
     if('retweet_flag' in relational_data_df.columns):
         relational_data_df['retweet_count'] = relational_data_df['retweet_flag'].apply(lambda x: f'<a value={x} href="http://example.com/">{len(x)}</a>'if isinstance(x, list) else 0)
+
+    #ordering columns
     columns_order=['name','screen_name','user_id', 'verified','statuses_count', 'original_tweet_count','retweet_count', 'quoted_tweet_count','reply_tweet_count','followers_count', 'friends_count', 'favourites_count','listed_count','location','language', 'description','url', 'default_profile_image','profile_image_url', 'default_profile', 'profile_background_image_url']
     relational_data_df = relational_data_df[[col for col in columns_order if col in relational_data_df.columns]]
+
     return(relational_data_df)
 
 
