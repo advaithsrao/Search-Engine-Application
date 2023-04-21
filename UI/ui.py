@@ -4,6 +4,7 @@ import os
 import pandas as pd
 import numpy as np
 from datetime import datetime
+import time
 
 root_folder = os.path.abspath(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 sys.path.append(root_folder)
@@ -36,14 +37,13 @@ def handle_data():
     start_datetime=datetime.strptime(start_datetime, '%m/%d/%y %I:%M %p').strftime('%Y-%m-%d %H:%M:%S')
     end_datetime=datetime.strptime(end_datetime, '%m/%d/%y %I:%M %p').strftime('%Y-%m-%d %H:%M:%S')
 
-    if('performancestats' in request.form):
-        performancestats = 1
-    else:
-        performancestats = 0
-    results_df=fetch_results(username,userscreenname,userverification,tweetstring,hashtags,tweetsensitivity,tweetcontenttype,start_datetime,end_datetime,performancestats)
-    #results_df=pd.DataFrame({'message': [start_datetime,end_datetime]})
+    search_start_time=time.time()
+    results_df=fetch_results(username,userscreenname,userverification,tweetstring,hashtags,tweetsensitivity,tweetcontenttype,start_datetime,end_datetime)
+    search_end_time=time.time()
+    total_time_taken={search_end_time-search_start_time}
+
     results_df.index = np.arange(1, len(results_df)+1)
-    return render_template('results.html',results=results_df.to_html(escape=False))
+    return render_template('results.html',results=results_df.to_html(escape=False),performanceresults=[total_time_taken])
 
 if __name__ == "__main__":
     app.run(port=8000,debug=True)

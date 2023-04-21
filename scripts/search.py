@@ -30,7 +30,7 @@ def fetch_relational_data(SQL_client,username,userscreenname,userverification,st
         query+=''' AND verified=FALSE'''
     
     print(query)
-    
+
     #run the query
     relational_data_df=pd.read_sql_query(query,con=SQL_client)
 
@@ -66,7 +66,7 @@ def fetch_relational_data(SQL_client,username,userscreenname,userverification,st
     return(relational_data_df)
 
 
-def fetch_results(username,userscreenname,userverification,tweetstring,hashtags,tweetsensitivity,tweetcontenttype,start_datetime,end_datetime,performancestats):
+def fetch_results(username,userscreenname,userverification,tweetstring,hashtags,tweetsensitivity,tweetcontenttype,start_datetime,end_datetime):
     SQL_client=connSQL()
     NoSQL_client=connNoSQL()
     relational_data_df=fetch_relational_data(SQL_client,username,userscreenname,userverification,start_datetime,end_datetime)
