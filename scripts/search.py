@@ -6,13 +6,12 @@ sys.path.append(root_folder)
 
 from utils import connSQL,connNoSQL
 
-def fetch_relational_data(SQL_client,username,userscreenname,start_datetime,end_datetime):
+def fetch_relational_data(SQL_client,username,userscreenname,userverification,start_datetime,end_datetime):
     if not(username):
         username='%'
     if not(userscreenname):
         userscreenname='%'
 
-    #fetching data
     query=f'''SELECT * FROM tweets 
                 LEFT OUTER JOIN user_profile 
                 ON tweets.user_id = user_profile.user_id 
@@ -23,7 +22,16 @@ def fetch_relational_data(SQL_client,username,userscreenname,start_datetime,end_
                 AND
                 tweet_created_at BETWEEN '{start_datetime}' AND '{end_datetime}'
             '''
-    #print(query)
+    
+    #Appending query for user verified status
+    if(userverification=='2'):
+        query+=''' AND verified=TRUE'''
+    if(userverification=='3'):
+        query+=''' AND verified=FALSE'''
+    
+    print(query)
+    
+    #run the query
     relational_data_df=pd.read_sql_query(query,con=SQL_client)
 
     #If no results found
@@ -61,7 +69,7 @@ def fetch_relational_data(SQL_client,username,userscreenname,start_datetime,end_
 def fetch_results(username,userscreenname,userverification,tweetstring,hashtags,tweetsensitivity,tweetcontenttype,start_datetime,end_datetime,performancestats):
     SQL_client=connSQL()
     NoSQL_client=connNoSQL()
-    relational_data_df=fetch_relational_data(SQL_client,username,userscreenname,start_datetime,end_datetime)
+    relational_data_df=fetch_relational_data(SQL_client,username,userscreenname,userverification,start_datetime,end_datetime)
     if(username or username):
         pass
     #No SQL Query
