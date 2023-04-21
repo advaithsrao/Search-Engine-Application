@@ -96,6 +96,7 @@ def createPostgresTables(_cursor):
             (
                 tweet_id TEXT PRIMARY KEY,
                 user_id TEXT,
+                tweet_created_at TIMESTAMP,
                 tweet_flag VARCHAR(20)
             )
             """
@@ -316,6 +317,7 @@ def pushPostgresData(_cursor, _data):
         table5Columns = [
             'tweet_id',
             'user_id',
+            'tweet_created_at',
             'tweet_flag'
         ]
 
@@ -323,6 +325,7 @@ def pushPostgresData(_cursor, _data):
             [
                 'id_str',
                 'user_id',
+                'created_at',
                 'flag'
             ]
         ]
