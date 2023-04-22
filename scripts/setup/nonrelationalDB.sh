@@ -24,6 +24,9 @@ docker run -d --name elasticSearchServer \
     -e "ELASTIC_PASSWORD=elasticsearchPW" \
     $imageID
 
+# Get the IP of ElasticSearch from our network NoSQL_network
+export ELASTICSEARCH_IP=$(docker network inspect noSQL_network | grep -oP '(?<="IPv4Address": ")[^"]*'  | cut -d'/' -f1)
+
 # Pull the latest docker image of elasticsearch
 docker pull kibana:7.14.0
 
@@ -36,7 +39,7 @@ docker run -d --name kibana \
     --restart=always \
     -e "ELASTIC_USERNAME=elasticsearchUser" \
     -e "ELASTIC_PASSWORD=elasticsearchPW" \
-    -e "ELASTICSEARCH_HOSTS=http://172.22.0.2:9200" \
+    -e ELASTICSEARCH_HOSTS="http://$ELASTICSEARCH_IP:9200" \
     -p 5601:5601 \
     $imageID
 
