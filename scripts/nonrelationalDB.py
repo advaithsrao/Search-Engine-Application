@@ -72,10 +72,11 @@ if __name__ == "__main__":
 
     twitterdf = twitterdf[
         [
-            'id_str',
-            'created_at',
+            'contributors',
             'text',
             'source',
+            'id_str',
+            'created_at',
             'user_id',
             'truncated',
             'lang',
