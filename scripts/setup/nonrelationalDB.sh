@@ -12,17 +12,20 @@ export imageID=$(docker images|grep elasticsearch|xargs|awk '{print $3}')
 docker network create noSQL_network
 
 # Run the elasticsearch image
-docker run -d --name elasticSearchServer \
-    --net noSQL_network \
-    --restart=always \
-    -p 9200:9200  \
-    -p 9300:9300 \
-    -e "discovery.type=single-node" \
-    -e "discovery.seed_hosts=localhost" \
-    -e "node.data=true" \
-    -e "ELASTIC_USERNAME=elasticsearchUser" \
-    -e "ELASTIC_PASSWORD=elasticsearchPW" \
-    $imageID
+screen  \
+        -S asr209_elasticSearch \
+        -d \
+        -m docker run -d --name elasticSearchServer \
+		--net noSQL_network \
+		--restart=always \
+		-p 9200:9200  \
+		-p 9300:9300 \
+		-e "discovery.type=single-node" \
+		-e "discovery.seed_hosts=localhost" \
+    		-e "node.data=true" \
+    		-e "ELASTIC_USERNAME=elasticsearchUser" \
+    		-e "ELASTIC_PASSWORD=elasticsearchPW" \
+    		$imageID
 
 # Get the IP of ElasticSearch from our network NoSQL_network
 export ELASTICSEARCH_IP=$(docker network inspect noSQL_network | grep -oP '(?<="IPv4Address": ")[^"]*'  | cut -d'/' -f1)
@@ -34,14 +37,17 @@ docker pull kibana:7.14.0
 export imageID=$(docker images|grep kibana|xargs|awk '{print $3}')
 
 # Run kibana for monitoring ELK
-docker run -d --name kibana \
-    --net noSQL_network \
-    --restart=always \
-    -e "ELASTIC_USERNAME=elasticsearchUser" \
-    -e "ELASTIC_PASSWORD=elasticsearchPW" \
-    -e ELASTICSEARCH_HOSTS="http://$ELASTICSEARCH_IP:9200" \
-    -p 5601:5601 \
-    $imageID
+screen  \
+        -S asr209_kibana \
+        -d \
+        -m docker run -d --name kibana \
+    		--net noSQL_network \
+    		--restart=always \
+    		-e "ELASTIC_USERNAME=elasticsearchUser" \
+		-e "ELASTIC_PASSWORD=elasticsearchPW" \
+    		-e ELASTICSEARCH_HOSTS="http://$ELASTICSEARCH_IP:9200" \
+    		-p 5601:5601 \
+    		$imageID
 
 # Note: In the above command, to get the elasticsearch host to use for kibana, use the below line, and get the elasticsearch ipv4 address and add it to the kibana docker run command
 # docker network inspect noSQL_network
