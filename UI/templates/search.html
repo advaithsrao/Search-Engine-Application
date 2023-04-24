@@ -37,18 +37,16 @@
     <div class="form-group">
         <label for="Input6">Tweet Sensitivity</label>
         <select name='tweetsensitivity' class="form-select form-select-lg" id="Input6" style="padding: 4px;">
-            <option value="1">Allow Insensitive</option>
-            <option value="2">Don't Allow Insensitive</option>
-            <option value="3">Show only Insensitive </option>
+            <option value="1">Allow All</option>
+            <option value="2">Only Sensitive</option>
+            <option value="3">Only Non-Sensitive</option>
         </select>
     </div>
     <div class="form-group">
         <label for="Input7">Tweet Content Type</label>
         <select name='tweetcontenttype' class="form-select form-select-lg" id="Input7" style="padding: 4px;">
             <option value="1">Any</option>
-            <option value="2">Only Text</option>
-            <option value="3">Only Media</option>
-            <option value="3">Text+Media</option>
+            <option value="2">Media Only</option>
         </select>
     </div>
     <div class="form-group">
@@ -56,7 +54,7 @@
         <input name='datetimerange' class="form-control form-control-solid" id="Input4" aria-describedby="Help4" placeholder="Enter any date-time range">
         <small id="Help4" class="form-text text-muted"></small>
     </div>
-    <button type="submit" class="btn btn-primary">Submit</button>
+    <button type="submit" style="display: block;" class="btn btn-primary">Submit</button>
   </form>
 </div>
 {% endblock %}
