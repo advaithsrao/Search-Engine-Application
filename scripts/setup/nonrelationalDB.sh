@@ -27,6 +27,9 @@ screen  \
     		-e "ELASTIC_PASSWORD=elasticsearchPW" \
     		$imageID
 
+# Sleep for 30 seconds as we want the earlier command to run
+sleep 30
+
 # Get the IP of ElasticSearch from our network NoSQL_network
 export ELASTICSEARCH_IP=$(docker network inspect noSQL_network | grep -oP '(?<="IPv4Address": ")[^"]*'  | cut -d'/' -f1)
 
