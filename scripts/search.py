@@ -180,10 +180,14 @@ def fetch_searched_tweets_data(NoSQL_client,tweetstring,hashtags,tweetsensitivit
         search_query["query"]["bool"]["minimum_should_match"]=1
 
     # Conditionally include the filter query for possibly_sensitive
-    if(tweetsensitivity) == "2":
+    if(tweetsensitivity == "2"):
         search_query["query"]["bool"]["filter"].append({"term": {"possibly_sensitive": 1}})
-    if(tweetsensitivity) == "3":
+    if(tweetsensitivity == "3"):
         search_query["query"]["bool"]["filter"].append({"bool": {"must_not": {"term": {"possibly_sensitive": 1}}}})
+    
+    # Conditionally include the filter query for media_type
+    if(tweetcontenttype == "2"):
+     search_query["query"]["bool"]["filter"].append({"exists": {"field": "entities.media.type"}})
 
     # Convert query to JSON string
     search_query_json = json.dumps(search_query)
