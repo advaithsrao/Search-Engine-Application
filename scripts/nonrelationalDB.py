@@ -97,6 +97,7 @@ if __name__ == "__main__":
     ]
 
     twitterdf['place'] = twitterdf['place'].map(str)
+    twitterdf['id_str'] = twitterdf['id_str'].map(str)
     # twitterdf['entities'] = twitterdf['entities'].map(str)
     twitterdf['extended_entities'] = twitterdf['extended_entities'].map(str)
     twitterdf['quoted_status'] = twitterdf['quoted_status'].map(str)
