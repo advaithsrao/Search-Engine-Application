@@ -379,6 +379,9 @@ if __name__ == "__main__":
     # Reset indices
     twitterdf.reset_index(inplace = True, drop = True)
 
+    # Reset indices
+    twitterdf.reset_index(inplace = True, drop = True)
+
     # Create new required columns
     twitterdf["user_id"] = twitterdf["user"].apply(
         lambda x: x["id_str"]
