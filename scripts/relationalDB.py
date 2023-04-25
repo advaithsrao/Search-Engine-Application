@@ -104,6 +104,22 @@ def createPostgresTables(_cursor):
         print('\t Table tweets Create Successful')
     except Exception as e:
         print(f'\t Table tweets Create Unuccessful as {e}')
+    
+    try:
+        # Logs table -> table 6
+        _cursor.execute(
+            """
+            CREATE TABLE logs
+            (
+                query TEXT PRIMARY KEY,
+                time_taken DECIMAL,
+                response JSONB
+            )
+            """
+        )
+        print('\t Table logs Create Successful')
+    except Exception as e:
+        print(f'\t Table logs Create Unuccessful as {e}')
 
 def preparePushData(_columns, _data, _tablename):
     # print(f'\t Executing Table Push for Table -> {_tablename}')
