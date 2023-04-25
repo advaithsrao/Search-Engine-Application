@@ -231,7 +231,7 @@ def pushPostgresData(_cursor, _data):
             'user_profile'
         )
     except Exception as e:
-        print(f'POSTGRES: * Push for Table -> user_profile Unsuccessful as {e} *')
+        print(f'POSTGRES: *** Push for Table -> user_profile Unsuccessful as {e} ***')
     
     try:    
         # Table 2
@@ -261,7 +261,7 @@ def pushPostgresData(_cursor, _data):
             'reply'
         )
     except Exception as e:
-        print(f'POSTGRES: * Push for Table -> reply Unsuccessful as {e} *')
+        print(f'POSTGRES: *** Push for Table -> reply Unsuccessful as {e} ***')
     
     try:    
         # Table 3
@@ -290,7 +290,7 @@ def pushPostgresData(_cursor, _data):
             'quoted_tweets'
         )
     except Exception as e:
-        print(f'POSTGRES: * Push for Table -> quoted_tweets Unsuccessful as {e} *')
+        print(f'POSTGRES: *** Push for Table -> quoted_tweets Unsuccessful as {e} ***')
 
     try:    
         # Table 4
@@ -326,7 +326,7 @@ def pushPostgresData(_cursor, _data):
             'retweets'
         )
     except Exception as e:
-        print(f'POSTGRES: * Push for Table -> retweets Unsuccessful as {e} *')
+        print(f'POSTGRES: *** Push for Table -> retweets Unsuccessful as {e} ***')
     
     try:    
         # Table 5
@@ -358,16 +358,16 @@ def pushPostgresData(_cursor, _data):
             'tweets'
         )
     except Exception as e:
-        print(f'POSTGRES: * Push for Table -> tweets Unsuccessful as {e} *')
+        print(f'POSTGRES: *** Push for Table -> tweets Unsuccessful as {e} ***')
 
-if _name_ == "_main_":
+if __name__ == "__main__":
     conn = connSQL()
     cur = conn.cursor()
     
     # Create POSTGRES tables
-    print('POSTGRES: * Table Creation Started *')
+    print('POSTGRES: *** Table Creation Started ***')
     createPostgresTables(cur)
-    print('POSTGRES: * All Tables Successfully Created *')
+    print('POSTGRES: *** All Tables Successfully Created ***')
     
     # Load the Twitter data
     twitterdf = pd.concat(
