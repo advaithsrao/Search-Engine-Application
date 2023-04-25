@@ -79,6 +79,8 @@ def fetch_searched_tweet_metadata_user_data(SQL_client,username,userscreenname,u
             FROM tweets t
             JOIN user_profile u ON t.user_id = u.user_id
             WHERE
+            (t.tweet_flag='original_tweet_flag' OR t.tweet_flag='quoted_tweet_flag')
+            AND 
             t.tweet_created_at BETWEEN '{start_datetime}' AND '{end_datetime}'
             '''
     
@@ -96,6 +98,7 @@ def fetch_searched_tweet_metadata_user_data(SQL_client,username,userscreenname,u
     if(len(filtered_tweet_ids)):
          filtered_tweet_ids=tuple(filtered_tweet_ids)
          query+=f''' AND t.tweet_id IN {filtered_tweet_ids}'''
+
     print(query)
 
     #run the query
@@ -274,19 +277,8 @@ def fetch_results(username,userscreenname,userverification,tweetstring,hashtags,
     NoSQL_client=connNoSQL()
     filtered_tweet_ids=[]
 
-    #If user parameters are provided. Search relatinal->non-relational
-    if(username or userscreenname):
-        searched_tweet_metadata_user_data=fetch_searched_tweet_metadata_user_data(SQL_client,username,userscreenname,userverification,start_datetime,end_datetime,filtered_tweet_ids)
-        if(searched_tweet_metadata_user_data.empty):
-            return(searched_tweet_metadata_user_data)
-        filtered_tweet_ids = searched_tweet_metadata_user_data['tweet_id'].values.tolist()
-        filtered_tweet_ids=[str(x) for x in filtered_tweet_ids]
-        searched_tweets_data=fetch_searched_tweets_data(NoSQL_client,tweetstring,hashtags,tweetsensitivity,tweetcontenttype,start_datetime,end_datetime,filtered_tweet_ids)
-        if(searched_tweets_data.empty):
-            return(searched_tweets_data)
-
     #If user parameters are non-provided. Search non-relatinal->relational
-    elif(tweetstring or hashtags):
+    if(tweetstring or hashtags):
         searched_tweets_data=fetch_searched_tweets_data(NoSQL_client,tweetstring,hashtags,tweetsensitivity,tweetcontenttype,start_datetime,end_datetime,filtered_tweet_ids)
         if(searched_tweets_data.empty):
             return(searched_tweets_data)
@@ -295,11 +287,21 @@ def fetch_results(username,userscreenname,userverification,tweetstring,hashtags,
         searched_tweet_metadata_user_data=fetch_searched_tweet_metadata_user_data(SQL_client,username,userscreenname,userverification,start_datetime,end_datetime,filtered_tweet_ids)
         if(searched_tweet_metadata_user_data.empty):
             return(searched_tweet_metadata_user_data)
-    
+    #If user parameters are provided. Search relatinal->non-relational
+    elif(username or userscreenname):
+        searched_tweet_metadata_user_data=fetch_searched_tweet_metadata_user_data(SQL_client,username,userscreenname,userverification,start_datetime,end_datetime,filtered_tweet_ids)
+        if(searched_tweet_metadata_user_data.empty):
+            return(searched_tweet_metadata_user_data)
+        filtered_tweet_ids = searched_tweet_metadata_user_data['tweet_id'].values.tolist()
+        filtered_tweet_ids=[str(x) for x in filtered_tweet_ids]
+        searched_tweets_data=fetch_searched_tweets_data(NoSQL_client,tweetstring,hashtags,tweetsensitivity,tweetcontenttype,start_datetime,end_datetime,filtered_tweet_ids)
+        if(searched_tweets_data.empty):
+            return(searched_tweets_data)
     else:
-        return(pd.DataFrame(['Please provide one of -userid,username,tweetstring,hashtags'], columns=['Message']))
+        return(pd.DataFrame(['Please provide one of username,userscreenname,tweetstring,hashtags'], columns=['Message']))
   
     results_df=pd.merge(searched_tweets_data,searched_tweet_metadata_user_data, on='tweet_id', how='inner') 
+    results_df=results_df.sort_values(by=['_score','retweet_count'], ascending=False)
     #results_df=searched_tweet_metadata_user_data
     return(results_df)
 
