@@ -42,7 +42,7 @@ def createPostgresTables(_cursor):
         print('\t Table user_profile Create Successful')
     except Exception as e:
         print(f'\t Table user_profile Create Unuccessful as {e}')
-    
+
     try:
         # Reply tweet table -> table 2
         _cursor.execute(
@@ -57,7 +57,7 @@ def createPostgresTables(_cursor):
         print('\t Table reply Create Successful')
     except Exception as e:
         print(f'\t Table reply Create Unuccessful as {e}')
-    
+
     try:
         # Quoted tweet table -> table 3
         _cursor.execute(
@@ -72,7 +72,7 @@ def createPostgresTables(_cursor):
         print('\t Table quoted_tweets Create Successful')
     except Exception as e:
         print(f'\t Table quoted_tweets Create Unuccessful as {e}')
-    
+
     try:
         # Retweet table -> table 4
         _cursor.execute(
@@ -87,7 +87,7 @@ def createPostgresTables(_cursor):
         print('\t Table retweets Create Successful')
     except Exception as e:
         print(f'\t Table retweets Create Unuccessful as {e}')
-    
+
     try:
         # Tweets table -> table 5
         _cursor.execute(
@@ -173,7 +173,7 @@ def pushPostgresData(_cursor, _data):
         ]
 
         _data1 = pd.DataFrame(_data['user'].values.tolist())
-
+        
         _data1['description'] = _data1['description'].apply(
             lambda x: x.encode('ascii', 'ignore').decode('utf-8') if bool(x) else x
         )
@@ -241,7 +241,7 @@ def pushPostgresData(_cursor, _data):
         ]
 
         table2Values = _data.loc[
-            _data.flag == 'reply_tweet_flag',
+            _data.in_reply_to_status_id_str.notna(),
             [
                 'id_str',
                 'in_reply_to_status_id_str',
@@ -269,9 +269,9 @@ def pushPostgresData(_cursor, _data):
             'quoted_tweet_id',
             'tweet_id'
         ]
-        
+
         table3Values = _data.loc[
-            _data.flag == 'quoted_tweet_flag',
+            _data.quoted_status_id_str.notna(),
             [
                 'id_str',
                 'quoted_status_id_str'
@@ -300,7 +300,7 @@ def pushPostgresData(_cursor, _data):
         ]
 
         _data1 = _data[
-            _data.flag == 'retweet_flag'
+            _data.retweeted_status.notna()
         ]
 
         _data1['tweet_id'] = _data1['retweeted_status'].apply(
@@ -376,8 +376,6 @@ if __name__ == "__main__":
             pd.read_json("./data/corona-out-3", lines=True)
         ]
     )
-    # Reset indices
-    twitterdf.reset_index(inplace = True, drop = True)
 
     # Reset indices
     twitterdf.reset_index(inplace = True, drop = True)
@@ -457,9 +455,9 @@ if __name__ == "__main__":
     # twitterdf.drop_duplicates(subset = ["user_id"], keep = "last", inplace = True)
 
     # Call push functions
-    print('POSTGRES: * Starting table push *')
+    print('POSTGRES: *** Starting table push ***')
     pushPostgresData(cur, twitterdf) 
-    print('POSTGRES: * Table Push Successful for all tables *')
+    print('POSTGRES: *** Table Push Successful for all tables ***')
 
     # Commit & close the cursor & connection
     cur.close()
