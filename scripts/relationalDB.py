@@ -42,7 +42,7 @@ def createPostgresTables(_cursor):
         print('\t Table user_profile Create Successful')
     except Exception as e:
         print(f'\t Table user_profile Create Unuccessful as {e}')
-
+    
     try:
         # Reply tweet table -> table 2
         _cursor.execute(
@@ -57,7 +57,7 @@ def createPostgresTables(_cursor):
         print('\t Table reply Create Successful')
     except Exception as e:
         print(f'\t Table reply Create Unuccessful as {e}')
-
+    
     try:
         # Quoted tweet table -> table 3
         _cursor.execute(
@@ -72,7 +72,7 @@ def createPostgresTables(_cursor):
         print('\t Table quoted_tweets Create Successful')
     except Exception as e:
         print(f'\t Table quoted_tweets Create Unuccessful as {e}')
-
+    
     try:
         # Retweet table -> table 4
         _cursor.execute(
@@ -87,7 +87,7 @@ def createPostgresTables(_cursor):
         print('\t Table retweets Create Successful')
     except Exception as e:
         print(f'\t Table retweets Create Unuccessful as {e}')
-
+    
     try:
         # Tweets table -> table 5
         _cursor.execute(
@@ -173,7 +173,7 @@ def pushPostgresData(_cursor, _data):
         ]
 
         _data1 = pd.DataFrame(_data['user'].values.tolist())
-        
+
         _data1['description'] = _data1['description'].apply(
             lambda x: x.encode('ascii', 'ignore').decode('utf-8') if bool(x) else x
         )
@@ -231,7 +231,7 @@ def pushPostgresData(_cursor, _data):
             'user_profile'
         )
     except Exception as e:
-        print(f'POSTGRES: *** Push for Table -> user_profile Unsuccessful as {e} ***')
+        print(f'POSTGRES: * Push for Table -> user_profile Unsuccessful as {e} *')
     
     try:    
         # Table 2
@@ -241,7 +241,7 @@ def pushPostgresData(_cursor, _data):
         ]
 
         table2Values = _data.loc[
-            _data.in_reply_to_status_id_str.notna(),
+            _data.flag == 'reply_tweet_flag',
             [
                 'id_str',
                 'in_reply_to_status_id_str',
@@ -261,7 +261,7 @@ def pushPostgresData(_cursor, _data):
             'reply'
         )
     except Exception as e:
-        print(f'POSTGRES: *** Push for Table -> reply Unsuccessful as {e} ***')
+        print(f'POSTGRES: * Push for Table -> reply Unsuccessful as {e} *')
     
     try:    
         # Table 3
@@ -269,9 +269,9 @@ def pushPostgresData(_cursor, _data):
             'quoted_tweet_id',
             'tweet_id'
         ]
-
+        
         table3Values = _data.loc[
-            _data.quoted_status_id_str.notna(),
+            _data.flag == 'quoted_tweet_flag',
             [
                 'id_str',
                 'quoted_status_id_str'
@@ -290,7 +290,7 @@ def pushPostgresData(_cursor, _data):
             'quoted_tweets'
         )
     except Exception as e:
-        print(f'POSTGRES: *** Push for Table -> quoted_tweets Unsuccessful as {e} ***')
+        print(f'POSTGRES: * Push for Table -> quoted_tweets Unsuccessful as {e} *')
 
     try:    
         # Table 4
@@ -300,7 +300,7 @@ def pushPostgresData(_cursor, _data):
         ]
 
         _data1 = _data[
-            _data.retweeted_status.notna()
+            _data.flag == 'retweet_flag'
         ]
 
         _data1['tweet_id'] = _data1['retweeted_status'].apply(
@@ -326,7 +326,7 @@ def pushPostgresData(_cursor, _data):
             'retweets'
         )
     except Exception as e:
-        print(f'POSTGRES: *** Push for Table -> retweets Unsuccessful as {e} ***')
+        print(f'POSTGRES: * Push for Table -> retweets Unsuccessful as {e} *')
     
     try:    
         # Table 5
@@ -358,16 +358,16 @@ def pushPostgresData(_cursor, _data):
             'tweets'
         )
     except Exception as e:
-        print(f'POSTGRES: *** Push for Table -> tweets Unsuccessful as {e} ***')
+        print(f'POSTGRES: * Push for Table -> tweets Unsuccessful as {e} *')
 
-if __name__ == "__main__":
+if _name_ == "_main_":
     conn = connSQL()
     cur = conn.cursor()
     
     # Create POSTGRES tables
-    print('POSTGRES: *** Table Creation Started ***')
+    print('POSTGRES: * Table Creation Started *')
     createPostgresTables(cur)
-    print('POSTGRES: *** All Tables Successfully Created ***')
+    print('POSTGRES: * All Tables Successfully Created *')
     
     # Load the Twitter data
     twitterdf = pd.concat(
@@ -376,6 +376,8 @@ if __name__ == "__main__":
             pd.read_json("./data/corona-out-3", lines=True)
         ]
     )
+    # Reset indices
+    twitterdf.reset_index(inplace = True, drop = True)
 
     # Create new required columns
     twitterdf["user_id"] = twitterdf["user"].apply(
@@ -451,13 +453,10 @@ if __name__ == "__main__":
     # # Drop duplicates on user_id
     # twitterdf.drop_duplicates(subset = ["user_id"], keep = "last", inplace = True)
 
-    # Reset indices
-    twitterdf.reset_index(inplace = True, drop = True)
-
     # Call push functions
-    print('POSTGRES: *** Starting table push ***')
+    print('POSTGRES: * Starting table push *')
     pushPostgresData(cur, twitterdf) 
-    print('POSTGRES: *** Table Push Successful for all tables ***')
+    print('POSTGRES: * Table Push Successful for all tables *')
 
     # Commit & close the cursor & connection
     cur.close()
