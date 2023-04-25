@@ -9,6 +9,7 @@ root_folder = os.path.abspath(os.path.dirname(os.path.dirname(os.path.abspath(__
 sys.path.append(root_folder)
 
 from scripts.search import fetch_results
+from scripts.user_search import fetch_user_results
 
 app = Flask(__name__)
 
@@ -43,6 +44,29 @@ def handle_data():
         results_df = pd.DataFrame(['no results found'], columns=['Message'])
     results_df.index = np.arange(1, len(results_df)+1)
     return render_template('results.html',results=results_df.to_html(escape=False),performanceresults=[total_time_taken])
+
+
+@app.route('/handle_user', methods=['GET','POST'])
+def handle_user():
+    args = request.args
+    user_id= (args.get("value"))
+    search_start_time=time.time()
+    (results1_df,results2_df,results3_df,results4_df) = fetch_user_results(user_id)
+    search_end_time=time.time()
+    total_time_taken={search_end_time-search_start_time}
+    if(results1_df.empty):
+        results1_df = pd.DataFrame(['no results found'], columns=['Message'])
+    results1_df.index = np.arange(1, len(results1_df)+1)
+    if(results2_df.empty):
+        results2_df = pd.DataFrame(['no results found'], columns=['Message'])
+    results2_df.index = np.arange(1, len(results2_df)+1)
+    if(results3_df.empty):
+        results3_df = pd.DataFrame(['no results found'], columns=['Message'])
+    results3_df.index = np.arange(1, len(results3_df)+1)
+    if(results4_df.empty):
+        results4_df = pd.DataFrame(['no results found'], columns=['Message'])
+    results4_df.index = np.arange(1, len(results4_df)+1)
+    return render_template('user_results.html',results=(results1_df.to_html(escape=False),results2_df.to_html(escape=False),results3_df.to_html(escape=False),results4_df.to_html(escape=False)),performanceresults=[total_time_taken])
 
 
 if __name__ == "__main__":
