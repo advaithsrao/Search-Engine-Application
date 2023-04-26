@@ -11,16 +11,7 @@ from collections import OrderedDict
 import asyncio
 from datetime import datetime
 import time
-
-class CustomJSONEncoder(json.JSONEncoder):
-    """
-    This is a custom class that extends the `json.JSONEncoder` class. It overrides the `default()` method
-    to handle datetime objects in a JSON-serializable format.
-    """
-    def default(self, obj):
-        if isinstance(obj, datetime):
-            return obj.isoformat()
-        return super().default(obj)
+from scripts.utils import CustomJSONEncoder
 
 class CacheManager:
     def __init__(self, cache_file = "diskCache.json", max_size=1024):
@@ -46,8 +37,8 @@ class CacheManager:
             if not os.path.exists('./data'):
                 os.makedirs('./data')
             
-            if os.path.exists(os.join('./data',self.cache_file)):
-                with open(os.join('./data',self.cache_file), 'r') as f:
+            if os.path.exists(os.path.join('./data',self.cache_file)):
+                with open(os.path.join('./data',self.cache_file), 'r') as f:
                     return OrderedDict(json.load(f))
             else:
                 return OrderedDict()
@@ -60,8 +51,8 @@ class CacheManager:
         Saves the cache to the file on disk.
         """
         try:
-            with open(self.cache_file_path, 'w') as f:
-                json.dump(self.cache, f)
+            with open(os.path.join('./data',self.cache_file), 'w') as f:
+                json.dump(self.cache, f, cls=CustomJSONEncoder)
         except Exception as e:
             print(f'Cache Save Failed as: {e}. Defaulting to empty cache')
     
@@ -155,7 +146,7 @@ class CacheManager:
         """
         self.cache.clear()
     
-    async def close(self, save = True):
+    def close(self, save = True):
         """
         Saves the cache to the JSON file and close it
         """

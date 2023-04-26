@@ -122,10 +122,9 @@ def createPostgresTables(_cursor):
             """
             CREATE TABLE logs
             (
-                query TEXT PRIMARY KEY,
-                created_at TIMESTAMP,
-                time_taken DECIMAL,
-                response TEXT
+                query TEXT,
+                created_at TEXT,
+                time_taken DECIMAL
             )
             """
         )

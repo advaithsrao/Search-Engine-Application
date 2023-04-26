@@ -10,6 +10,18 @@ from configparser import ConfigParser
 import psycopg2
 from elasticsearch import Elasticsearch
 from datetime import datetime
+from psycopg2.extras import Json
+from psycopg2 import extensions
+
+class CustomJSONEncoder(json.JSONEncoder):
+    """
+    This is a custom class that extends the `json.JSONEncoder` class. It overrides the `default()` method
+    to handle datetime objects in a JSON-serializable format.
+    """
+    def default(self, obj):
+        if isinstance(obj, datetime):
+            return obj.isoformat()
+        return super().default(obj)
 
 def getConfig():
     """
@@ -67,19 +79,17 @@ def connNoSQL():
 
     return _client
 
-async def pushLogs(key, result, created_at, response_time):
+async def pushLogs(key, result, response_time):
     """
     This function inserts a new row into a PostgreSQL database table called 'logs' using the provided cursor object.
     The row contains the following values:
     - A JSON-serialized representation of the key (if it is a dictionary), or the key value (if it is not)
-    - The current datetime in the format 'YYYY-MM-DD HH:MM:SS'
     - The response time (in seconds)
     - The response as a JSONB column in the database (as psycopg2.extras.Json)
 
     Parameters:
     - key: the key associated with the response (can be a dictionary or a simple value)
     - result: the response to be logged (any JSON-serializable object)
-    - created_at: the datetime when the response was created (can be None)
     - response_time: the response time in seconds (can be None)
     """
     _connection = connSQL()
@@ -88,18 +98,28 @@ async def pushLogs(key, result, created_at, response_time):
     if isinstance(key, dict):
         key = json.dumps(key)
     
-    created_at = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+    created_at=datetime.now()
+    created_at=json.dumps(created_at,cls=CustomJSONEncoder)
+
+
+
+    if bool(key):key = extensions.adapt(key).getquoted().decode('utf-8')
+    if bool(key):key = key.replace('"', '').replace("%", "%%")
     
-    _cursor.execute(
-        f"""
+    sql_query=f"""
             INSERT INTO
-                logs (query, created_at, time_taken, response)
+                logs (query, created_at, time_taken)
             VALUES
-                ({key},{created_at},{response_time},{json.dumps(result)})
+                ({key},{Json(created_at)},{response_time})
         """
+    
+    print(sql_query)
+
+    _cursor.execute(
+        sql_query
     )
 
-    _cursor.commit()
+    _connection.commit()
     _cursor.close()
     _connection.close()
 
