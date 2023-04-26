@@ -18,7 +18,7 @@ class CustomJSONEncoder(json.JSONEncoder):
         return super().default(obj)
 
 class CacheManager:
-    def __init__(self, cache_file_path = "./data/lruCache.json", max_size=1024):
+    def __init__(self, cache_file_path = "./data/diskCache.json", max_size=1024):
         """
         Initializes a new instance of the DiskLRUCache class.
 
@@ -51,8 +51,11 @@ class CacheManager:
         """
         Saves the cache to the file on disk.
         """
-        with open(self.cache_file_path, 'w') as f:
-            json.dump(self.cache, f)
+        try:
+            with open(self.cache_file_path, 'w') as f:
+                json.dump(self.cache, f)
+        except Exception as e:
+            print(f'Cache Save Failed as: {e}. Defaulting to empty cache')
     
     def __contains__(self, key):
         """
@@ -83,7 +86,7 @@ class CacheManager:
 
         return value['result']
 
-    def setQuery(self, key, result, response_time):
+    def putQuery(self, key, result, response_time):
         """
         Adds the given key-value pair to the cache.
 
@@ -103,9 +106,9 @@ class CacheManager:
             self.cache.popitem(last=False)
         
         self.cache[key] = {
-            'result'        : result, 
-            'time-to-live'  : _ttl,
-            'created_at'    : datetime.now().strftime("%Y-%m-%d %H:%M:%S"),
+            'result' : result, 
+            'time-to-live' : _ttl,
+            'created_at' : datetime.now().strftime("%Y-%m-%d %H:%M:%S"),
             'response_time' : response_time
         }
 
