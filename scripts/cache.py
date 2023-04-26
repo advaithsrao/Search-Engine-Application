@@ -91,8 +91,7 @@ class CacheManager:
         self.cache[key] = value
 
         response_time = time.time() - _start
-
-        #update response time on fetch from cache
+        
         self.cache[key]['response_time'] = response_time
         self.cache[key]['created_at'] = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
 

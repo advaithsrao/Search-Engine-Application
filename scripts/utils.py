@@ -8,7 +8,6 @@ import os
 import json
 from configparser import ConfigParser
 import psycopg2
-import asyncio
 from elasticsearch import Elasticsearch
 from datetime import datetime
 
@@ -99,7 +98,7 @@ async def pushLogs(key, result, created_at, response_time):
             INSERT INTO
                 logs (query, created_at, time_taken, response)
             VALUES
-                ({key},{created_at},{response_time},{result})
+                ({key},{created_at},{response_time},{_resp})
         """
     )
 
