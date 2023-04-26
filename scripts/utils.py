@@ -89,16 +89,13 @@ async def pushLogs(key, result, created_at, response_time):
         key = json.dumps(key)
     
     created_at = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
-
-    #Edit response result to JSONB out
-    _resp = psycopg2.extras.Json(json.dumps(result), adapt_on_null=True)
     
     _cursor.execute(
         f"""
             INSERT INTO
                 logs (query, created_at, time_taken, response)
             VALUES
-                ({key},{created_at},{response_time},{_resp})
+                ({key},{created_at},{response_time},{json.dumps(result)})
         """
     )
 
