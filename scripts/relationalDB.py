@@ -7,7 +7,9 @@ Description:
 """
 from utils import connSQL
 import pandas as pd
+import numpy as np
 from psycopg2 import extensions
+from datetime import datetime
 import warnings
 warnings.filterwarnings('ignore')
 
@@ -360,6 +362,59 @@ def pushPostgresData(_cursor, _data):
     except Exception as e:
         print(f'POSTGRES: *** Push for Table -> tweets Unsuccessful as {e} ***')
 
+def get_quoted_status_created_at(row):
+    try:
+        return datetime.strptime(row['quoted_status']['created_at'], '%a %b %d %H:%M:%S %z %Y')
+    except (KeyError, TypeError):
+        return None
+
+def get_retweeted_status_created_at(row):
+    try:
+        return datetime.strptime(row['retweeted_status']['created_at'], '%a %b %d %H:%M:%S %z %Y')
+    except (KeyError, TypeError):
+        return None
+
+def get_reply_created_at(row):
+    try:
+        return datetime.strptime(row['created_at'], '%a %b %d %H:%M:%S %z %Y')
+    except (KeyError, TypeError):
+        return None
+
+def assign_flag(row):
+    quoted_status = row.get('quoted_status')
+    retweeted_status = row.get('retweeted_status')
+    reply = row.get('in_reply_to_user_id_str')
+    
+    if quoted_status and retweeted_status:
+        quoted_created_at = get_quoted_status_created_at(row)
+        retweeted_created_at = get_retweeted_status_created_at(row)
+        if quoted_created_at and retweeted_created_at and quoted_created_at > retweeted_created_at:
+            return 'quoted_tweet'
+        else:
+            return 'retweeted_tweet'
+    
+    if quoted_status and reply:
+        quoted_created_at = get_quoted_status_created_at(row)
+        reply_created_at = get_reply_created_at(row)
+        if quoted_created_at and reply_created_at and quoted_created_at > reply_created_at:
+            return 'quoted_tweet'
+        else:
+            return 'reply_tweet'
+    
+    if quoted_status and not reply and not retweeted_status:
+        return 'quoted_tweet'
+    
+    if not quoted_status and not reply and retweeted_status:
+        return 'retweeted_tweet'
+
+    if not quoted_status and reply and not retweeted_status:
+        return 'reply_tweet'
+       
+    if not quoted_status and not reply and not retweeted_status:
+        return 'original_tweet'
+    
+    return ''
+
 if __name__ == "__main__":
     conn = connSQL()
     cur = conn.cursor()
@@ -377,6 +432,9 @@ if __name__ == "__main__":
         ]
     )
 
+    # Drop duplicates on tweet id_str
+    twitterdf.drop_duplicates(subset = ["id_str"], keep = "last", inplace = True)
+
     # Reset indices
     twitterdf.reset_index(inplace = True, drop = True)
 
@@ -385,45 +443,16 @@ if __name__ == "__main__":
         lambda x: x["id_str"]
     )
 
-    twitterdf['flag'] = ''
+    twitterdf['in_reply_to_status_id_str'] = twitterdf['in_reply_to_status_id_str'].apply(
+        lambda x: np.nan if pd.isnull(x) else int(x)
+        )
+    twitterdf['quoted_status_id_str'] = twitterdf['quoted_status_id_str'].apply(
+        lambda x: np.nan if pd.isnull(x) else int(x)
+        )
 
+    twitterdf['flag'] = twitterdf.apply(assign_flag, axis = 1)
     twitterdf['created_at'] = pd.to_datetime(twitterdf['created_at'])
-    twitterdf['created_at'] = twitterdf['created_at'].dt.strftime('%a %b %d %H:%M:%S +0000 %Y')
-
-    for index, row in twitterdf.iterrows():
-        # Check if quoted_status and retweeted_status are not NaN
-        if not pd.isnull(row['quoted_status']) and not pd.isnull(row['retweeted_status']):
-            # Extract the created_at dates for the quoted and retweeted tweets
-            quoted_created_at = row['quoted_status']['created_at']
-            retweeted_created_at = row['retweeted_status']['created_at']
-            
-            # Compare the dates and set the flag column accordingly
-            if quoted_created_at > retweeted_created_at:
-                twitterdf.loc[index, 'flag'] = 'quoted_tweet_flag'
-            else:
-                twitterdf.loc[index, 'flag'] = 'retweet_flag'
-        
-        if not pd.isnull(row['quoted_status']) and not pd.isnull(row['in_reply_to_user_id_str']):
-            # Extract the created_at dates for the quoted and reply tweets
-            quoted_created_at = row['quoted_status']['created_at']
-            reply_created_at = row['created_at']
-            
-            # Compare the dates and set the flag column accordingly
-            if quoted_created_at > reply_created_at:
-                twitterdf.loc[index, 'flag'] = 'quoted_tweet_flag'
-            else:
-                twitterdf.loc[index, 'flag'] = 'reply_tweet_flag'
-
-        elif not pd.isnull(row['quoted_status']):
-            twitterdf.loc[index, 'flag'] = 'quoted_tweet_flag'
-
-        elif not pd.isnull(row['retweeted_status']):
-            twitterdf.loc[index, 'flag'] = 'retweet_flag'
-            
-        elif not pd.isnull(row['in_reply_to_user_id_str']):
-            twitterdf.loc[index, 'flag'] = 'reply_tweet_flag'
-        else:
-            twitterdf.loc[index, 'flag'] = 'original_tweet_flag'
+    twitterdf['created_at'] = twitterdf['created_at'].dt.strftime('%a %b %d %H:%M:%S %z %Y')
 
     # twitterdf['retweet_flag'] = np.where(
     #     twitterdf['retweeted_status'].isna(), 
