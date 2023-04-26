@@ -23,15 +23,15 @@ class CustomJSONEncoder(json.JSONEncoder):
         return super().default(obj)
 
 class CacheManager:
-    def __init__(self, cache_file_path = "./data/diskCache.json", max_size=1024):
+    def __init__(self, cache_file = "diskCache.json", max_size=1024):
         """
         Initializes a new instance of the DiskLRUCache class.
 
         Parameters:
-        cache_file_path (str): The path to the file that will be used for caching.
+        cache_file (str): The path to the file that will be used for caching.
         max_size (int): The maximum number of entries that can be stored in the cache.
         """
-        self.cache_file_path = cache_file_path
+        self.cache_file = cache_file
         
         self.max_size = max_size
         
@@ -43,8 +43,11 @@ class CacheManager:
         Loads the cache from the file on disk.
         """
         try:
-            if os.path.exists(self.cache_file_path):
-                with open(self.cache_file_path, 'r') as f:
+            if not os.path.exists('./data'):
+                os.makedirs('./data')
+            
+            if os.path.exists(os.join('./data',self.cache_file)):
+                with open(os.join('./data',self.cache_file), 'r') as f:
                     return OrderedDict(json.load(f))
             else:
                 return OrderedDict()
