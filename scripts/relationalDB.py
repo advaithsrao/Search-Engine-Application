@@ -114,6 +114,7 @@ def createPostgresTables(_cursor):
             CREATE TABLE logs
             (
                 query TEXT PRIMARY KEY,
+                created_at TIMESTAMP,
                 time_taken DECIMAL,
                 response JSONB
             )
@@ -381,11 +382,11 @@ def get_reply_created_at(row):
         return None
 
 def assign_flag(row):
-    quoted_status = row.get('quoted_status')
-    retweeted_status = row.get('retweeted_status')
-    reply = row.get('in_reply_to_user_id_str')
+    quoted_status = row['quoted_status']
+    retweeted_status = row['retweeted_status']
+    reply = row['in_reply_to_status_id_str']
     
-    if quoted_status and retweeted_status:
+    if not pd.isnull(quoted_status) and not pd.isnull(retweeted_status):
         quoted_created_at = get_quoted_status_created_at(row)
         retweeted_created_at = get_retweeted_status_created_at(row)
         if quoted_created_at and retweeted_created_at and quoted_created_at > retweeted_created_at:
@@ -393,7 +394,7 @@ def assign_flag(row):
         else:
             return 'retweeted_tweet'
     
-    if quoted_status and reply:
+    if not pd.isnull(quoted_status) and not pd.isnull(reply):
         quoted_created_at = get_quoted_status_created_at(row)
         reply_created_at = get_reply_created_at(row)
         if quoted_created_at and reply_created_at and quoted_created_at > reply_created_at:
@@ -401,16 +402,16 @@ def assign_flag(row):
         else:
             return 'reply_tweet'
     
-    if quoted_status and not reply and not retweeted_status:
+    if not pd.isnull(quoted_status) and pd.isnull(reply) and pd.isnull(retweeted_status):
         return 'quoted_tweet'
     
-    if not quoted_status and not reply and retweeted_status:
+    if pd.isnull(quoted_status) and pd.isnull(reply) and not pd.isnull(retweeted_status):
         return 'retweeted_tweet'
 
-    if not quoted_status and reply and not retweeted_status:
+    if pd.isnull(quoted_status) and not pd.isnull(reply) and pd.isnull(retweeted_status):
         return 'reply_tweet'
        
-    if not quoted_status and not reply and not retweeted_status:
+    if pd.isnull(quoted_status) and pd.isnull(reply) and pd.isnull(retweeted_status):
         return 'original_tweet'
     
     return ''
