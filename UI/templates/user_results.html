@@ -1,0 +1,26 @@
+{% extends "base.html" %}
+{% block content %}
+<div id="performanceresultsdiv">
+Total Time taken for search to run= {{performanceresults[0]}} seconds.
+</div>
+
+<h3>Tweets by user:</h3>
+<div class="resultsdiv">
+{{results[0]| safe }}
+</div>
+<hr>
+<h3>Quoted Tweets by user:</h3>
+<div class="resultsdiv">
+{{results[1]| safe }}
+</div>
+<hr>
+<h3>Retweets by user:</h3>
+<div class="resultsdiv">
+    {{results[2]| safe }}
+</div>
+<hr>
+<h3>Replies by user:</h3>
+<div class="resultsdiv">
+{{results[3]| safe }}
+</div>
+{% endblock %}

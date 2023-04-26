@@ -1,0 +1,66 @@
+{% extends "base.html" %}
+{% block stylesheets %}
+<link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/daterangepicker/daterangepicker.css" />
+<link href="tagsinput.css" rel="stylesheet" type="text/css">
+{% endblock %}
+{% block content %}
+<div style="margin: auto;width: 35em;padding: 25px;">
+<form action="{{ url_for('handle_data') }}" method="POST" style="padding: 15px;border: 1px solid;">
+    <div class="form-group">
+      <label for="Input1">User's Name</label>
+      <input type="text" name='username' class="form-control" id="Input1" aria-describedby="Help1" placeholder="Enter User's Name">
+      <small id="Help1" class="form-text text-muted">(Optional): Add % in start or end of string as wildcard. e.g. %charles%</small>
+    </div>
+    <div class="form-group">
+        <label for="Input2">User's ScreenName</label>
+        <input type="text" name='userscreenname' class="form-control" id="Input2" aria-describedby="Help2" placeholder="Enter User's ScreenName">
+        <small id="Help2" class="form-text text-muted">(Optional): Add % in start or end of string as wildcard. e.g. %charles%</small>
+    </div>
+    <div class="form-group">
+    <label for="Input7">User Verification</label>
+        <select name='userverification' class="form-select form-select-lg" id="Input7" style="padding: 4px;">
+            <option value="1">Show All</option>
+            <option value="2">Only Verified</option>
+            <option value="3">Only Non-Verified</option>
+        </select>
+    </div>
+    <div class="form-group">
+        <label for="Input3">Tweet String</label>
+        <input type="text" name='tweetstring' class="form-control" id="Input3" aria-describedby="Help3" placeholder="Enter any string">
+        <small id="Help3" class="form-text text-muted"></small>
+    </div>
+    <div class="form-group">
+        <label for="Input5">Hashtags</label>
+        <input name='hashtags' style="padding: 4px;" type="textarea" data-role="tagsinput" class="form-control" id="Input5" aria-describedby="Help5" placeholder="Enter tags here">
+        <small id="Help5" class="form-text text-muted">Enter a tag and hit Enter to add another</small>
+    </div>
+    <div class="form-group">
+        <label for="Input6">Tweet Sensitivity</label>
+        <select name='tweetsensitivity' class="form-select form-select-lg" id="Input6" style="padding: 4px;">
+            <option value="1">Allow All</option>
+            <option value="2">Only Sensitive</option>
+            <option value="3">Only Non-Sensitive</option>
+        </select>
+    </div>
+    <div class="form-group">
+        <label for="Input7">Tweet Content Type</label>
+        <select name='tweetcontenttype' class="form-select form-select-lg" id="Input7" style="padding: 4px;">
+            <option value="1">Any</option>
+            <option value="2">Media Only</option>
+        </select>
+    </div>
+    <div class="form-group">
+        <label for="Input4">Date Time Range</label>
+        <input name='datetimerange' class="form-control form-control-solid" id="Input4" aria-describedby="Help4" placeholder="Enter any date-time range">
+        <small id="Help4" class="form-text text-muted"></small>
+    </div>
+    <button type="submit" style="display: block;" class="btn btn-primary">Submit</button>
+  </form>
+</div>
+{% endblock %}
+{% block scripts %}
+<script type="text/javascript" src="https://cdn.jsdelivr.net/momentjs/latest/moment.min.js"></script>
+<script type="text/javascript" src="https://cdn.jsdelivr.net/npm/daterangepicker/daterangepicker.min.js"></script>
+<script src="../static/search.js"></script>
+<script src="../static/tagsinput.js"></script>
+{% endblock %}
