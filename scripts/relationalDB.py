@@ -445,10 +445,10 @@ if __name__ == "__main__":
 
     twitterdf['in_reply_to_status_id_str'] = twitterdf['in_reply_to_status_id_str'].apply(
         lambda x: np.nan if pd.isnull(x) else int(x)
-        )
+    )
     twitterdf['quoted_status_id_str'] = twitterdf['quoted_status_id_str'].apply(
         lambda x: np.nan if pd.isnull(x) else int(x)
-        )
+    )
 
     twitterdf['flag'] = twitterdf.apply(assign_flag, axis = 1)
     twitterdf['created_at'] = pd.to_datetime(twitterdf['created_at'])
