@@ -153,9 +153,9 @@ def fetch_user_results(user_id):
 
     results_df=pd.merge(searched_tweets_data,searched_tweet_metadata_user_data, on='tweet_id', how='inner') 
     results_df=results_df.sort_values(by=['retweet_count'], ascending=False)
-    results_df_org=results_df[results_df['tweet_flag'] == 'original_tweet_flag']
-    results_df_quoted=results_df[results_df['tweet_flag'] == 'quoted_tweet_flag']
-    results_df_retweet=results_df[results_df['tweet_flag'] == 'retweet_flag']
-    results_df_reply=results_df[results_df['tweet_flag'] == 'reply_flag']
+    results_df_org=results_df[results_df['tweet_flag'] == 'original_tweet']
+    results_df_quoted=results_df[results_df['tweet_flag'] == 'quoted_tweet']
+    results_df_retweet=results_df[results_df['tweet_flag'] == 'retweeted_tweet']
+    results_df_reply=results_df[results_df['tweet_flag'] == 'reply_tweet']
 
     return(results_df_org,results_df_quoted,results_df_retweet,results_df_reply)

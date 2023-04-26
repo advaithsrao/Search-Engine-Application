@@ -4,6 +4,7 @@ import os
 import pandas as pd
 import numpy as np
 import time
+import asyncio
 
 root_folder = os.path.abspath(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 sys.path.append(root_folder)
@@ -11,6 +12,7 @@ sys.path.append(root_folder)
 from scripts.search import fetch_results
 from scripts.user_search import fetch_user_results
 from scripts.tweet_search import fetch_tweet_results
+from scripts.metric_search import fetch_metric_results
 from scripts.cache import CacheManager
 from scripts.utils import pushLogs
 
@@ -44,6 +46,8 @@ def handle_data():
     tweetsensitivity = str(request.form['tweetsensitivity']).strip()
     tweetcontenttype= str(request.form['tweetcontenttype']).strip()
     datetimerange= str(request.form['datetimerange']).strip()
+    start_datetime=datetimerange.split('-')[0].strip()
+    end_datetime=datetimerange.split('-')[1].strip()
 
     search_start_time=time.time()
     if cacher.__contains__(form_data):
@@ -51,19 +55,17 @@ def handle_data():
         cache_flag=1
         results_df=pd.DataFrame(cache_result)
     else:
-        start_datetime=datetimerange.split('-')[0].strip()
-        end_datetime=datetimerange.split('-')[1].strip()
         results_df=fetch_results(username,userscreenname,userverification,tweetstring,hashtags,tweetsensitivity,tweetcontenttype,start_datetime,end_datetime)
     search_end_time=time.time()
-    total_time_taken={search_end_time-search_start_time}
-    
+    total_time_taken=search_end_time-search_start_time
+    print(form_data)
     if(results_df.empty):
         results_df = pd.DataFrame(['no results found'], columns=['Message'])
     results_df.index = np.arange(1, len(results_df)+1)
     if(cache_flag==0):
         cacher.putQuery(key = form_data, result = results_df.to_dict(orient='records'), response_time = total_time_taken)
     cacher.close(save = True)
-    pushLogs(form_data, results_df.to_dict(orient='records'), start_datetime, total_time_taken)
+    asyncio.run(pushLogs(form_data, results_df.to_dict(orient='records'), total_time_taken))
     return render_template('results.html',results=results_df.to_html(escape=False,classes="table table-striped table-bordered"),performanceresults=[total_time_taken])
 
 
@@ -80,7 +82,7 @@ def handle_user():
 @app.route('/handle_tweet', methods=['GET','POST'])
 def handle_tweet():
     args = request.args
-    my_arg1= (args.get("value"))
+    my_arg1= (args.get("value"))    
     my_arg2= (args.get("key"))
     search_start_time=time.time()
     if(my_arg2=='all'):
@@ -96,9 +98,12 @@ def handle_tweet():
 
 @app.route('/handle_topmetrics', methods=['POST'])
 def handle_topmetrics():
-
-    results_df=pd.DataFrame()
-    return render_template('results.html',results=formatted_df(results_df),performanceresults=[total_time_taken])
+    selected_option = request.form['mySelect']
+    search_start_time=time.time()
+    results_df=fetch_metric_results(selected_option)
+    search_end_time=time.time()
+    total_time_taken={search_end_time-search_start_time}
+    return render_template('metricresults.html',results=formatted_df(results_df),performanceresults=[total_time_taken])
 
 def formatted_df(my_df):
     print(type(my_df))

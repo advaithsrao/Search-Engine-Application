@@ -219,9 +219,9 @@ def fetch_tweet_results(tweet_id,key):
     #print(results_df)
 
     if(key=='all'):
-        results_df_quoted=results_df[results_df['tweet_flag'] == 'quoted_tweet_flag']
-        results_df_retweet=results_df[results_df['tweet_flag'] == 'retweet_flag']
-        results_df_reply=results_df[results_df['tweet_flag'] == 'reply_flag']
+        results_df_quoted=results_df[results_df['tweet_flag'] == 'quoted_tweet']
+        results_df_retweet=results_df[results_df['tweet_flag'] == 'retweeted_tweet']
+        results_df_reply=results_df[results_df['tweet_flag'] == 'reply_tweet']
         return(results_df_retweet,results_df_quoted,results_df_reply)
     else:
         return(results_df)

@@ -22,7 +22,7 @@ def fetch_searched_tweet_metadata_user_data(SQL_client,username,userscreenname,u
             FROM tweets t
             JOIN user_profile u ON t.user_id = u.user_id
             WHERE
-            (t.tweet_flag='original_tweet_flag' OR t.tweet_flag='quoted_tweet_flag')
+            (t.tweet_flag='original_tweet' OR t.tweet_flag='quoted_tweet')
             AND 
             t.tweet_created_at BETWEEN '{start_datetime}' AND '{end_datetime}'
             '''

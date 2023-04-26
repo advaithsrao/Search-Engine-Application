@@ -1,0 +1,21 @@
+{% extends "base.html" %}
+{% block content %}
+<div style="margin: auto;width: 35em;padding: 25px;">
+    <form action="{{ url_for('handle_topmetrics') }}" method="POST" style="padding: 15px;border: 1px solid;">
+        <label for="Input1">Select Metric</label>
+        <select name='merticselect' class="form-select form-select-lg" id="Input1" style="padding: 4px;">
+            <option value="0" selected="true" disabled="disabled">Select One Metric</option>
+            <option value="1">Top 10 Users by Follower Count</option>
+            <option value="2">Top 10 Tweets by Retweet Count</option>
+            <option value="3">Top 10 Tweets by Number of Likes</option>
+            <option value="4">Top 10 Tweets by Number of Comments</option>
+        </select>
+    </div>
+    </form>
+</div>
+<div id="metricresults">
+</div>
+{% endblock %}
+{% block scripts %}
+<script src="../static/metric.js"></script>
+{% endblock %}
