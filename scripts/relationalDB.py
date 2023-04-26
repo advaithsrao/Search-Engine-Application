@@ -474,6 +474,8 @@ if __name__ == "__main__":
     twitterdf["user_id"] = twitterdf["user"].apply(
         lambda x: x["id_str"]
     )
+    
+    twitterdf['id_str'] = twitterdf['id_str'].astype(str)
 
     twitterdf['in_reply_to_status_id_str'] = twitterdf['in_reply_to_status_id_str'].apply(
         lambda x: np.nan if pd.isnull(x) else int(x)
