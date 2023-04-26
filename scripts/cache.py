@@ -10,8 +10,13 @@ import os
 from collections import OrderedDict
 import asyncio
 from datetime import datetime
+import time
 
 class CustomJSONEncoder(json.JSONEncoder):
+    """
+    This is a custom class that extends the `json.JSONEncoder` class. It overrides the `default()` method
+    to handle datetime objects in a JSON-serializable format.
+    """
     def default(self, obj):
         if isinstance(obj, datetime):
             return obj.isoformat()
@@ -76,6 +81,7 @@ class CacheManager:
         Parameters:
         key (str): The key to retrieve the value for.
         """
+        _start = time.time()
         if isinstance(key, dict):
             key = json.dumps(key)
 
@@ -84,7 +90,18 @@ class CacheManager:
         
         self.cache[key] = value
 
-        return value['result']
+        response_time = time.time() - _start
+
+        #update response time on fetch from cache
+        self.cache[key]['response_time'] = response_time
+        self.cache[key]['created_at'] = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+
+        if response_time < 10:
+            _ttl = 300
+        else:
+            _ttl = 300 + response_time
+        
+        return self.cache[key]['result']
 
     def putQuery(self, key, result, response_time):
         """
@@ -106,10 +123,10 @@ class CacheManager:
             self.cache.popitem(last=False)
         
         self.cache[key] = {
-            'result'        :result, 
-            'time-to-live'  :_ttl,
-            'created_at'    :datetime.now().strftime("%Y-%m-%d %H:%M:%S"),
-            'response_time' :response_time
+            'result'        : result, 
+            'time-to-live'  : _ttl,
+            'created_at'    : datetime.now().strftime("%Y-%m-%d %H:%M:%S"),
+            'response_time' : response_time
         }
 
     def delQuery(self, key):
@@ -136,7 +153,7 @@ class CacheManager:
         """
         self.cache.clear()
     
-    def close(self, save = True):
+    async def close(self, save = True):
         """
         Saves the cache to the JSON file and close it
         """
