@@ -98,13 +98,14 @@ async def pushLogs(key, result, response_time):
     if isinstance(key, dict):
         key = json.dumps(key)
     
-    created_at=datetime.now()
-    created_at=json.dumps(created_at,cls=CustomJSONEncoder)
+    created_at = datetime.now()
+    created_at = json.dumps(created_at,cls=CustomJSONEncoder)
 
 
 
-    if bool(key):key = extensions.adapt(key).getquoted().decode('utf-8')
-    if bool(key):key = key.replace('"', '').replace("%", "%%")
+    if bool(key):
+        key = extensions.adapt(key).getquoted().decode('utf-8')
+        key = key.replace('"', '').replace("%", "%%")
     
     sql_query=f"""
             INSERT INTO
