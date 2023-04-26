@@ -1,2 +1,4 @@
 dbms_env/
 Data/
+**/.DS_Store
+__pycache__
