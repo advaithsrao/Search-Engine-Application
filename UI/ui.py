@@ -10,6 +10,7 @@ sys.path.append(root_folder)
 
 from scripts.search import fetch_results
 from scripts.user_search import fetch_user_results
+from scripts.tweet_search import fetch_tweet_results
 
 app = Flask(__name__)
 
@@ -43,7 +44,7 @@ def handle_data():
     if(results_df.empty):
         results_df = pd.DataFrame(['no results found'], columns=['Message'])
     results_df.index = np.arange(1, len(results_df)+1)
-    return render_template('results.html',results=results_df.to_html(escape=False),performanceresults=[total_time_taken])
+    return render_template('results.html',results=results_df.to_html(escape=False,classes="table table-striped table-bordered"),performanceresults=[total_time_taken])
 
 
 @app.route('/handle_user', methods=['GET','POST'])
@@ -54,19 +55,34 @@ def handle_user():
     (results1_df,results2_df,results3_df,results4_df) = fetch_user_results(user_id)
     search_end_time=time.time()
     total_time_taken={search_end_time-search_start_time}
-    if(results1_df.empty):
-        results1_df = pd.DataFrame(['no results found'], columns=['Message'])
-    results1_df.index = np.arange(1, len(results1_df)+1)
-    if(results2_df.empty):
-        results2_df = pd.DataFrame(['no results found'], columns=['Message'])
-    results2_df.index = np.arange(1, len(results2_df)+1)
-    if(results3_df.empty):
-        results3_df = pd.DataFrame(['no results found'], columns=['Message'])
-    results3_df.index = np.arange(1, len(results3_df)+1)
-    if(results4_df.empty):
-        results4_df = pd.DataFrame(['no results found'], columns=['Message'])
-    results4_df.index = np.arange(1, len(results4_df)+1)
-    return render_template('user_results.html',results=(results1_df.to_html(escape=False),results2_df.to_html(escape=False),results3_df.to_html(escape=False),results4_df.to_html(escape=False)),performanceresults=[total_time_taken])
+    return render_template('user_results.html',results=(formatted_df(results1_df),formatted_df(results2_df),formatted_df(results3_df),formatted_df(results4_df)),performanceresults=[total_time_taken])
+
+@app.route('/handle_tweet', methods=['GET','POST'])
+def handle_tweet():
+    args = request.args
+    my_arg1= (args.get("value"))
+    my_arg2= (args.get("key"))
+    search_start_time=time.time()
+    if(my_arg2=='all'):
+        (retweet_results_df,quoted_results_df,reply_tweets_df)=fetch_tweet_results(my_arg1,my_arg2)
+        search_end_time=time.time()
+        total_time_taken={search_end_time-search_start_time}
+        return render_template('all_tweet_results.html',results=(formatted_df(retweet_results_df),formatted_df(quoted_results_df),formatted_df(reply_tweets_df)),performanceresults=[total_time_taken])
+    else:
+        results_df=fetch_tweet_results(my_arg1,my_arg2)
+        search_end_time=time.time()
+        total_time_taken={search_end_time-search_start_time}
+        return render_template('results.html',results=formatted_df(results_df),performanceresults=[total_time_taken])
+
+
+def formatted_df(my_df):
+    print(type(my_df))
+    print(my_df)
+    if(my_df.empty):
+        return('No Results')
+    my_df.index = np.arange(1, len(my_df)+1)
+    my_df=my_df.to_html(escape=False,classes="table table-striped table-bordered")
+    return(my_df)
 
 
 if __name__ == "__main__":

@@ -39,8 +39,11 @@ def fetch_searched_tweet_metadata_user_data(SQL_client,username,userscreenname,u
         query+=''' AND u.verified=FALSE'''
     
     if(len(filtered_tweet_ids)):
-         filtered_tweet_ids=tuple(filtered_tweet_ids)
-         query+=f''' AND t.tweet_id IN {filtered_tweet_ids}'''
+        if(len(filtered_tweet_ids)==1):
+            filtered_tweet_ids='('+filtered_tweet_ids[0]+')'
+        else:
+            filtered_tweet_ids=tuple(filtered_tweet_ids)
+        query+=f''' AND t.tweet_id IN {filtered_tweet_ids}'''
 
     print(query)
 
@@ -250,16 +253,30 @@ def fetch_results(username,userscreenname,userverification,tweetstring,hashtags,
 
 
 
-def my_formatting(val1,val2):
+def my_tweet_formatting(val1,val2,val3):
+    my_frmt = f'''<a href="#" target="_blank" 
+                      onclick="window.open('handle_tweet?value={val1}&key={val2}')">{val3}</a>'''
+    return(my_frmt)
+
+def my_user_formatting(val1,val2):
     my_frmt = f'''<a href="#" target="_blank" 
                       onclick="window.open('handle_user?value={val1}')">{val2}</a>'''
     return(my_frmt)
 
 def apply_formatting(results_df):
     if('name' in results_df.columns and 'user_id' in results_df.columns):
-        results_df['name']=results_df.apply(lambda x:my_formatting(x['user_id'],x['name']),axis=1)
+        results_df['name']=results_df.apply(lambda x:my_user_formatting(x['user_id'],x['name']),axis=1)
     if('screen_name' in results_df.columns and 'user_id' in results_df.columns):
-        results_df['screen_name']=results_df.apply(lambda x:my_formatting(x['user_id'],x['screen_name']),axis=1)
+        results_df['screen_name']=results_df.apply(lambda x:my_user_formatting(x['user_id'],x['screen_name']),axis=1)
     if('user_id' in results_df.columns):
-        results_df['user_id']=results_df.apply(lambda x:my_formatting(x['user_id'],x['user_id']),axis=1)
+        results_df['user_id']=results_df.apply(lambda x:my_user_formatting(x['user_id'],x['user_id']),axis=1)
+
+    if('retweet_count' in results_df.columns and 'tweet_id' in results_df.columns):
+        results_df['retweet_count']=results_df.apply(lambda x:my_tweet_formatting(x['tweet_id'],'retweet',x['retweet_count']),axis=1)
+    if('quoted_count' in results_df.columns):
+        results_df['quoted_count']=results_df.apply(lambda x:my_tweet_formatting(x['tweet_id'],'quoted',x['quoted_count']),axis=1)
+    if('reply_count' in results_df.columns):
+        results_df['reply_count']=results_df.apply(lambda x:my_tweet_formatting(x['tweet_id'],'reply',x['reply_count']),axis=1)
+    if('tweet_id' in results_df.columns):
+        results_df['tweet_id']=results_df.apply(lambda x:my_tweet_formatting(x['tweet_id'],'all',x['tweet_id']),axis=1)
     return(results_df)
