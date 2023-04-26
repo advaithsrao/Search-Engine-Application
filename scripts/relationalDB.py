@@ -125,7 +125,7 @@ def createPostgresTables(_cursor):
                 query TEXT PRIMARY KEY,
                 created_at TIMESTAMP,
                 time_taken DECIMAL,
-                response JSONB
+                response TEXT
             )
             """
         )
