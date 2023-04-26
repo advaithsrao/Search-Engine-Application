@@ -146,6 +146,21 @@ class CacheManager:
         """
         self.cache.clear()
     
+    def backupCache(self,current_timestamp):
+        """
+        Clears all items from the cache.
+        """
+        if not bool(current_timestamp):
+            current_timestamp = datetime.now().strptime("%Y-%m-%d %H:%M:%S")
+        
+        try:
+            bckup_file = f'./data/diskCache_{current_timestamp}.json'
+            with open(os.path.join('./data',bckup_file), 'w') as f:
+                json.dump(self.cache, f, cls=CustomJSONEncoder)
+            print(f'Cache Backup Successful at {current_timestamp}')
+        except Exception as e:
+            print(f'Cache Backup Failed at {current_timestamp} as : {e}')
+
     def close(self, save = True):
         """
         Saves the cache to the JSON file and close it
