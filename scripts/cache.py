@@ -106,10 +106,10 @@ class CacheManager:
             self.cache.popitem(last=False)
         
         self.cache[key] = {
-            'result' : result, 
-            'time-to-live' : _ttl,
-            'created_at' : datetime.now().strftime("%Y-%m-%d %H:%M:%S"),
-            'response_time' : response_time
+            'result'        :result, 
+            'time-to-live'  :_ttl,
+            'created_at'    :datetime.now().strftime("%Y-%m-%d %H:%M:%S"),
+            'response_time' :response_time
         }
 
     def delQuery(self, key):
@@ -123,7 +123,12 @@ class CacheManager:
             key = json.dumps(key)
         
         del self.cache[key]
-        
+    
+    def dictInspect(self):
+        """
+        Return cache dict to inspect
+        """
+        return self.cache
 
     def clear(self):
         """
