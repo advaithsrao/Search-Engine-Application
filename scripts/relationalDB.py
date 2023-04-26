@@ -14,6 +14,15 @@ import warnings
 warnings.filterwarnings('ignore')
 
 def createPostgresTables(_cursor):
+    """
+    Creates six tables in a Postgres database using SQL CREATE TABLE statements.
+
+    Parameters:
+        _cursor (cursor): A cursor object used to execute SQL commands in Postgres.
+
+    Returns:
+        None
+    """
     try:
         # User profile table -> table 1
         _cursor.execute(
@@ -125,6 +134,17 @@ def createPostgresTables(_cursor):
         print(f'\t Table logs Create Unuccessful as {e}')
 
 def preparePushData(_columns, _data, _tablename):
+    """
+    This function is used to push data into the corresponding table.
+
+    Parameters:
+    _columns (list): The list of columns in the table
+    _data (pandas.DataFrame): The data that needs to be pushed into the table
+    _tablename (str): The name of the table into which the data will be pushed
+
+    Returns:
+    None
+    """
     # print(f'\t Executing Table Push for Table -> {_tablename}')
 
     _columns = ', '.join(_columns)
@@ -382,6 +402,18 @@ def get_reply_created_at(row):
         return None
 
 def assign_flag(row):
+    """This function takes a row of data and assigns a flag to indicate the type of tweet.
+
+    Args:
+    row (pandas Series): A single row of data from a pandas DataFrame containing Twitter data.
+
+    Returns:
+    str: A flag indicating the type of tweet, which can be one of the following:
+    - 'quoted_tweet': if the tweet is a quote tweet
+    - 'retweeted_tweet': if the tweet is a retweet
+    - 'reply_tweet': if the tweet is a reply
+    - 'original_tweet': if the tweet is an original tweet
+    """
     quoted_status = row['quoted_status']
     retweeted_status = row['retweeted_status']
     reply = row['in_reply_to_status_id_str']
@@ -410,7 +442,7 @@ def assign_flag(row):
 
     if pd.isnull(quoted_status) and not pd.isnull(reply) and pd.isnull(retweeted_status):
         return 'reply_tweet'
-       
+
     if pd.isnull(quoted_status) and pd.isnull(reply) and pd.isnull(retweeted_status):
         return 'original_tweet'
     
