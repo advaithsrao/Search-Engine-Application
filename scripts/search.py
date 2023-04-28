@@ -45,7 +45,7 @@ def fetch_searched_tweet_metadata_user_data(SQL_client,username,userscreenname,u
             filtered_tweet_ids=tuple(filtered_tweet_ids)
         query+=f''' AND t.tweet_id IN {filtered_tweet_ids}'''
 
-    print(query)
+    #print(query)
 
     #run the query
     searched_tweet_metadata_user_data=pd.read_sql_query(query,con=SQL_client)
@@ -77,6 +77,16 @@ def fetch_searched_tweets_data(NoSQL_client,tweetstring,hashtags,tweetsensitivit
                         }
                         }
                         ],
+                        "must_not": [
+                            {
+                            "regexp": {
+                                "text": {
+                                "value": "#[a-zA-Z]+"
+                                }
+                            }
+                            }
+                        ]
+                        ,
                         "filter": []
                         }
                     },
@@ -101,10 +111,10 @@ def fetch_searched_tweets_data(NoSQL_client,tweetstring,hashtags,tweetsensitivit
     # Conditionally include the match query for text
     if(len(tweetstring)):
         search_query["query"]["bool"]["should"].append({
-            "match": {
+            "match_phrase": {
                 "text": {
                     "query": tweetstring,
-                    "operator": "or"
+                     "slop": 1000
                 }
             }
         })
