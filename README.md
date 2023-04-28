@@ -3,8 +3,14 @@
   - [1. Git clone the repository](#1-git-clone-the-repository)
   - [2. Setup python environment](#2-setup-python-environment)
     - [2.a. Create a venv environment](#2a-create-a-venv-environment)
-    - [2.b. Install requirements.txt file using pip](#2b-install-requirementstxt-file-using-pip)
-  - [3. Setup the relational database](#3-setup-the-relational-database)
+    - [2.b. Source onto environment](#2b-source-onto-environment)
+    - [2.c. Install requirements.txt file using pip](#2c-install-requirementstxt-file-using-pip)
+  - [3. Add search API data to data folder](#3-add-search-api-data-to-data-folder)
+  - [3. Setup the SQL and NoSQL databases](#3-setup-the-sql-and-nosql-databases)
+  - [4. Setup the Front End](#4-setup-the-front-end)
+  - [5. Setup the periodic ttl based cacher](#5-setup-the-periodic-ttl-based-cacher)
+- [Other information](#other-information)
+  - [| 5601 | Kibana for ELK |](#-5601--kibana-for-elk-)
 
 
 <br/>
@@ -58,10 +64,43 @@ pip3 install -r requirements.txt --no-cache-dir
 
 <br/>
 
+## 3. Add search API data to data folder
+
+```bash
+mkdir ./data
+#copy data to this folder
+```
+
 ## 3. Setup the SQL and NoSQL databases
 
 ```bash
 sh scripts/setup/main.sh
 ```
 
+<br/>
+
+## 4. Setup the Front End
+
+```bash
+python3 UI/ui.py > /outputs/uiLogs.out & 
+```
+
+Once you run this, you should see the search app @ localhost:8000
+
+<br/>
+
+## 5. Setup the periodic ttl based cacher 
+
+```bash
+python3 scripts/staleCacheChecker.py > /outputs/cacherLogs.out & 
+```
+
+# Other information
+
+| Port | Application |
+| ---- | ---- |
+| 8000 | Search App |
+| 5544 | PostgreSQL |
+| 9200 | Elastic Search (ELK) |
+| 5601 | Kibana for ELK |
 ---
