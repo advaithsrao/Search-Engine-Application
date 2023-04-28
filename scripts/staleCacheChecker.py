@@ -18,7 +18,7 @@ class StaleCacheRemover:
         """
         self.cacher = CacheManager()
         self.cache = self.cacher.dictInspect()
-        self.clean_interval = 3600  # clean the cache every hour
+        # self.clean_interval = 3600  # clean the cache every hour
 
     def cleanCache(self):
         """
